@@ -3,7 +3,17 @@ guid: cc4d4b7a486cac747826abd588e68288
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TableTop
+    second: {fileID: 2100000, guid: 240f3dfb7d8ff2248baa03b5d8134917, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wallpaper
+    second: {fileID: 2100000, guid: 4a8215d3a49033944ad6b1d1b86d81f5, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

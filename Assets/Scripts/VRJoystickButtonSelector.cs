@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 namespace BNG
 {
@@ -14,6 +15,13 @@ namespace BNG
 
         private Vector2 lastJoystickVector; // Track the previous joystick input
         public bool singleSelectMode = true; // Toggle for single select mode
+
+        // UnityEvent triggered when the selection moves
+        [System.Serializable]
+        public class SelectionMoveEvent : UnityEvent<GameObject, MoveDirection> { }
+
+        // Event to be assigned in the inspector or code
+        public SelectionMoveEvent OnSelectionMoved;
 
         private void OnEnable()
         {
@@ -69,7 +77,6 @@ namespace BNG
         // Handles the actual selection based on the joystick vector
         private void HandleSelection(GameObject currentSelected, Vector2 joystickVector)
         {
-            // Navigate the UI based on the joystick input
             if (joystickVector.y > 0.5f)
             {
                 // Move Up
@@ -124,6 +131,8 @@ namespace BNG
                 if (nextSelectable != null)
                 {
                     eventSystem.SetSelectedGameObject(nextSelectable.gameObject);
+                    // Invoke the event, passing the new selected GameObject and direction
+                    OnSelectionMoved?.Invoke(nextSelectable.gameObject, direction);
                 }
             }
         }
@@ -132,5 +141,13 @@ namespace BNG
         {
             destinationButton.Select();
         }
+    }
+
+    public enum MoveDirection
+    {
+        Up,
+        Down,
+        Left,
+        Right
     }
 }
