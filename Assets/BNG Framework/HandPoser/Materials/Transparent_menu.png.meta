@@ -1,0 +1,701 @@
+fileFormatVersion: 2
+guid: 573035707f1c73e4d9eb9200a3753248
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Start Button Selected
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 908
+        width: 178
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40d452d3ad2399744b6bc100b99ccdac
+      internalID: -1369788767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Paused
+      rect:
+        serializedVersion: 2
+        x: 1134
+        y: 866
+        width: 554
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ffd30623a580f34bb15b0125bf6efd4
+      internalID: -1545267135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Settings Button Selected
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 764
+        width: 256
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc7155c06401bf44a84a8d47222bd2a6
+      internalID: -1353430447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Achievements Button Selected
+      rect:
+        serializedVersion: 2
+        x: 495
+        y: 620
+        width: 358
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4661b1291a499a544a04ed8c7557a519
+      internalID: -7096122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Restart Button Selected
+      rect:
+        serializedVersion: 2
+        x: 1452
+        y: 655
+        width: 383
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39370263fc7e30c49b4d77739e74b786
+      internalID: 677343876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Credits Button Selected
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 476
+        width: 230
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b8b7828ad12a584ebc5491ef1da54a2
+      internalID: -2024195810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Main Menu Button Select
+      rect:
+        serializedVersion: 2
+        x: 1503
+        y: 497
+        width: 281
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ecb8acf8fd274046a3a4f4ee28bf949
+      internalID: -858204315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Graphics Button Selected
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 182
+        width: 255
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06a2b0a0c765c78438aafb3483d094fd
+      internalID: -431364581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sound Button Selected
+      rect:
+        serializedVersion: 2
+        x: 904
+        y: 182
+        width: 179
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7555b061049479b4884c20bf446204c8
+      internalID: 262305727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Subtitles Button Selected
+      rect:
+        serializedVersion: 2
+        x: 1178
+        y: 182
+        width: 281
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 804f1e4fba14deb4b99b078919483c8a
+      internalID: 827683933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Controls Button Selected
+      rect:
+        serializedVersion: 2
+        x: 1548
+        y: 182
+        width: 255
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4891bd1d280798642a538849521eac3f
+      internalID: 423066953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Start Button
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 908
+        width: 178
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa0f12525b5b2fa4ab420528fc986e98
+      internalID: 931452562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Settings Button
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 764
+        width: 256
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be4bcb7ac353511439f89b5adab2091f
+      internalID: -1930074503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Achievements Button
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 620
+        width: 358
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67040b8c617783447970168fafcecea1
+      internalID: -1227159895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Credits Button
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 476
+        width: 230
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e8eeb9e67523354bab830d7fe53b103
+      internalID: -71343522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Settings
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 182
+        width: 347
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9aae9c769cdabc04c905e69805634cda
+      internalID: 1887398048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Graphics Button
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 83
+        width: 255
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90913053384e4794691e8b2e6e7f10fc
+      internalID: -218806866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sound Button
+      rect:
+        serializedVersion: 2
+        x: 904
+        y: 83
+        width: 179
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16e5640483018d54fb5688bc4e88dc51
+      internalID: 2145719410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Subtitles Button
+      rect:
+        serializedVersion: 2
+        x: 1178
+        y: 83
+        width: 281
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29b2916bff7f7df4dae05c74e60d28f9
+      internalID: -450860767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Controls Button
+      rect:
+        serializedVersion: 2
+        x: 1548
+        y: 83
+        width: 255
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba8c6672e9536df4ab03bf0169ac5568
+      internalID: -1412869684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Main Menu Button
+      rect:
+        serializedVersion: 2
+        x: 1025
+        y: 497
+        width: 281
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2efcc56a6f788ba47a1c55da665f8be8
+      internalID: 1543596882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Restart Button
+      rect:
+        serializedVersion: 2
+        x: 976
+        y: 655
+        width: 383
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e54e3fd19d8fd0b4185d7c55ed2f7a87
+      internalID: 560792301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 4934bed35099fe6489ed136dea0c7f21
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Achievements Button: -1227159895
+      Achievements Button Selected: -7096122
+      Controls Button: -1412869684
+      Controls Button Selected: 423066953
+      Credits Button: -71343522
+      Credits Button Selected: -2024195810
+      Graphics Button: -218806866
+      Graphics Button Selected: -431364581
+      Main Menu Button: 1543596882
+      Main Menu Button Select: -858204315
+      Paused: -1545267135
+      Restart Button: 560792301
+      Restart Button Selected: 677343876
+      Settings: 1887398048
+      Settings Button: -1930074503
+      Settings Button Selected: -1353430447
+      Sound Button: 2145719410
+      Sound Button Selected: 262305727
+      Start Button: 931452562
+      Start Button Selected: -1369788767
+      Subtitles Button: -450860767
+      Subtitles Button Selected: 827683933
+      Transparent_menu_10: -940979326
+      Transparent_menu_100: 1691487860
+      Transparent_menu_101: -1622201335
+      Transparent_menu_102: 84346957
+      Transparent_menu_103: -1273028229
+      Transparent_menu_104: 1263087255
+      Transparent_menu_105: -1893737616
+      Transparent_menu_106: -1307794674
+      Transparent_menu_107: -1084497352
+      Transparent_menu_108: -731156844
+      Transparent_menu_109: 1480790408
+      Transparent_menu_11: -44664383
+      Transparent_menu_110: 1934625754
+      Transparent_menu_111: 2044995832
+      Transparent_menu_19: 1512934834
+      Transparent_menu_20: 993748070
+      Transparent_menu_21: 357606970
+      Transparent_menu_22: 306116018
+      Transparent_menu_23: 576934773
+      Transparent_menu_24: 1437998990
+      Transparent_menu_25: 1691670324
+      Transparent_menu_27: 1030561703
+      Transparent_menu_28: -150729445
+      Transparent_menu_29: -1788048092
+      Transparent_menu_30: 174736640
+      Transparent_menu_31: 246567811
+      Transparent_menu_32: 610448187
+      Transparent_menu_33: 1670282378
+      Transparent_menu_34: -1803183469
+      Transparent_menu_35: 2108083093
+      Transparent_menu_36: -676571648
+      Transparent_menu_37: 641923178
+      Transparent_menu_38: 268070993
+      Transparent_menu_40: 632756222
+      Transparent_menu_41: 2132470117
+      Transparent_menu_42: -2040217400
+      Transparent_menu_43: 435481514
+      Transparent_menu_44: -1679510537
+      Transparent_menu_45: -564269397
+      Transparent_menu_46: 955977235
+      Transparent_menu_47: -355900124
+      Transparent_menu_48: 448923602
+      Transparent_menu_50: 179803295
+      Transparent_menu_51: -972438608
+      Transparent_menu_52: 448631632
+      Transparent_menu_54: -439253400
+      Transparent_menu_55: -261414197
+      Transparent_menu_56: 2030510143
+      Transparent_menu_57: -2067783728
+      Transparent_menu_58: -1805164636
+      Transparent_menu_59: 523941826
+      Transparent_menu_60: -409118208
+      Transparent_menu_61: 761387088
+      Transparent_menu_62: 1087387749
+      Transparent_menu_63: -823022512
+      Transparent_menu_64: -1702751850
+      Transparent_menu_65: -2019954585
+      Transparent_menu_66: -1679234888
+      Transparent_menu_67: -81143468
+      Transparent_menu_68: -1984157640
+      Transparent_menu_69: 1435725025
+      Transparent_menu_7: -1563494019
+      Transparent_menu_70: 1387672164
+      Transparent_menu_71: -830747163
+      Transparent_menu_72: 998038348
+      Transparent_menu_73: 284629803
+      Transparent_menu_74: -829626999
+      Transparent_menu_75: 2140099419
+      Transparent_menu_8: -1011840574
+      Transparent_menu_80: 475513830
+      Transparent_menu_81: 722634685
+      Transparent_menu_82: -975433966
+      Transparent_menu_83: -1696814746
+      Transparent_menu_84: 936550719
+      Transparent_menu_85: 1691901736
+      Transparent_menu_86: 1409259441
+      Transparent_menu_87: 1734022568
+      Transparent_menu_88: -1012613232
+      Transparent_menu_89: -885256156
+      Transparent_menu_9: 1978297019
+      Transparent_menu_90: -305138070
+      Transparent_menu_91: -1030761141
+      Transparent_menu_92: 1410134705
+      Transparent_menu_93: -298765135
+      Transparent_menu_94: 470606491
+      Transparent_menu_95: -1011237087
+      Transparent_menu_96: -101110657
+      Transparent_menu_97: -155031608
+      Transparent_menu_98: 60264485
+      Transparent_menu_99: -1898990188
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
