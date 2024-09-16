@@ -18,8 +18,8 @@ public class MainMenuStart : MonoBehaviour
         {
             if (player)
             {
-                player.position = transform.position;
-                player.rotation = transform.rotation;
+                player.position = newSpawn.position;
+                player.rotation = newSpawn.rotation;
                 IntroFinished.Invoke();
             }
         }
