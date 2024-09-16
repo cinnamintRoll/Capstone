@@ -7,7 +7,6 @@ namespace BNG
     public class VRButtonInputHandler : MonoBehaviour
     {
         public EventSystem eventSystem; // Reference to the EventSystem managing UI
-        public UnityEngine.UI.Button defaultBackButton; // A button to go back
 
 
         public void SelectButtonPress()
@@ -28,17 +27,7 @@ namespace BNG
 
         public void HandleBackButtonPress()
         {
-            // Handle the "Back" button press
-
-            // You can implement custom back logic here. For example, go to a previous menu or deselect current UI
-            if (defaultBackButton != null)
-            {
-                defaultBackButton.onClick.Invoke(); // Invoke the back button's functionality
-            }
-            else
-            {
-                Debug.Log("No back button assigned.");
-            }
+            Input.GetButtonDown("Cancel");
         }
     }
 }
