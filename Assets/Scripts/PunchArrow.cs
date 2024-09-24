@@ -1,97 +1,104 @@
+using System.Collections.ObjectModel;
 using UnityEngine;
 
-public class PunchArrow : Coin
+public class PunchArrow : MonoBehaviour
 {
-    public Transform player; // Reference to the player's transform (e.g., head or body)
-    public float playerDistanceWindow = 1.5f; // The ideal distance from the punch arrow
+    public Transform collector; // Reference to the collector object (can be anything, not just player)
+    public float idealCollectorDistance = 1.5f; // The ideal distance from the punch arrow
     public float maxTimingScore = 100f; // Maximum score for perfect timing
     public float maxSpeedScore = 100f; // Maximum score for punch speed
     public float maxAngleScore = 100f; // Maximum score for perfect angle
     public float maxDistance = 3.0f; // Maximum distance before it's considered a miss
-    public float maxAllowedAngle = 30f; // Maximum angle deviation (in degrees) for a valid punch
+    public float maxAllowedAngle = 30f; // Maximum angle deviation (in degrees) for a valid hit
 
-    private bool punchRegistered = false;
+    private bool hitRegistered = false;
 
-    public override void OnCollisionEvent(Collision collision)
+    public void OnTriggerEnter(Collider other)
     {
-        if (punchRegistered) return; // Ignore multiple punches
+        if (hitRegistered) return; // Prevent multiple hits
 
-        if (collision.gameObject.layer.Equals("Hand"))
+        // Check if the other object has a Collector component (not using "Hand" tag or specific player)
+        Collector collectorScript = other.GetComponent<Collector>();
+        if (collectorScript != null)
         {
             // Calculate angle first; if it's a miss, exit early
-            float anglePoints = CalculateAnglePoints(collision);
+            float anglePoints = CalculateAnglePoints(other);
             if (anglePoints == 0)
             {
-                Debug.Log("Punch missed due to wrong angle.");
-                punchRegistered = true;
+                Debug.Log("Hit missed due to wrong angle.");
+                hitRegistered = true;
                 return; // Early exit as it's a miss
             }
 
             // Calculate all factors for point calculation
             float timingPoints = CalculateTimingPoints();
-            float speedPoints = CalculateSpeedPoints(collision);
+            float speedPoints = CalculateSpeedPoints(other);
 
             // Sum all points
             float totalPoints = timingPoints + anglePoints + speedPoints;
-            Debug.Log($"Punch Successful! Total Points: {totalPoints}");
+            Debug.Log($"Hit Successful! Total Points: {totalPoints}");
 
-            // Modify points in PointsManager
+            // Modify points in PointsManager if it exists
             if (PointsManager.Instance != null)
             {
                 PointsManager.Instance.ModifyPoints((int)totalPoints);
             }
 
-            punchRegistered = true; // Prevent multiple punches from being registered
+            hitRegistered = true; // Prevent multiple hits from being registered
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer.Equals("Hand"))
+        Collector collectorScript = other.GetComponent<Collector>();
+        if (collectorScript != null)
         {
-            // Distance from the player to the punch arrow
-            float distanceToPlayer = (transform.position - player.position).magnitude;
-            Debug.Log($"Distance to Player: {distanceToPlayer}");
+            // Distance from the collector to the punch arrow
+            float distanceToCollector = (transform.position - collector.position).magnitude;
+            Debug.Log($"Distance to Collector: {distanceToCollector}");
         }
     }
 
     private float CalculateTimingPoints()
     {
-        // Calculate the distance between the player and the punch arrow
-        float distanceToPlayer = (transform.position - player.position).magnitude;
+        // Calculate the distance between the collector and the punch arrow
+        float distanceToCollector = (transform.position - collector.position).magnitude;
 
-        // If the player is farther than maxDistance, it's a miss and no points are awarded
-        if (distanceToPlayer > maxDistance)
+        // If the collector is farther than maxDistance, it's a miss and no points are awarded
+        if (distanceToCollector > maxDistance)
         {
-            Debug.Log("Player missed the punch (too far).");
+            Debug.Log("Collector missed the hit (too far).");
             return 0f;
         }
 
-        // The closer the player is to the ideal distance, the more points they get
-        float distanceDifference = Mathf.Abs(distanceToPlayer - playerDistanceWindow);
+        // The closer the collector is to the ideal distance, the more points they get
+        float distanceDifference = Mathf.Abs(distanceToCollector - idealCollectorDistance);
 
-        // Calculate points based on how close the player is to the ideal distance
-        float timingPoints = Mathf.Max(0, maxTimingScore - (distanceDifference / playerDistanceWindow) * maxTimingScore);
+        // Calculate points based on how close the collector is to the ideal distance
+        float timingPoints = Mathf.Max(0, maxTimingScore - (distanceDifference / idealCollectorDistance) * maxTimingScore);
         Debug.Log($"Timing Points: {timingPoints}");
 
         return timingPoints;
     }
 
-    private float CalculateAnglePoints(Collision collision)
+    private float CalculateAnglePoints(Collider other)
     {
         // X-axis of the PunchArrow object (local forward direction)
         Vector3 punchArrowXAxis = transform.forward;
 
-        // Get the direction of the punch (player's hand velocity normalized)
-        Vector3 punchDirection = collision.gameObject.GetComponent<Rigidbody>().velocity.normalized;
+        // Get the direction of the hit (collector's object velocity normalized)
+        Rigidbody collectorRigidbody = other.GetComponent<Rigidbody>();
+        if (collectorRigidbody == null) return 0;
 
-        // Calculate the angle between the punch direction and the object's X-axis
-        float angle = Vector3.Angle(punchDirection, punchArrowXAxis);
+        Vector3 hitDirection = collectorRigidbody.velocity.normalized;
+
+        // Calculate the angle between the hit direction and the object's X-axis
+        float angle = Vector3.Angle(hitDirection, punchArrowXAxis);
 
         // If the angle is greater than the maxAllowedAngle, it's considered a miss
         if (angle > maxAllowedAngle)
         {
-            Debug.Log($"Punch missed due to large angle: {angle} degrees.");
+            Debug.Log($"Hit missed due to large angle: {angle} degrees.");
             return 0f; // No points for the wrong angle
         }
 
@@ -101,15 +108,18 @@ public class PunchArrow : Coin
         return anglePoints;
     }
 
-    private float CalculateSpeedPoints(Collision collision)
+    private float CalculateSpeedPoints(Collider other)
     {
-        // Speed is based on the velocity magnitude of the player's hand Rigidbody at the point of collision
-        float punchSpeed = collision.relativeVelocity.magnitude;
+        // Speed is based on the velocity magnitude of the collector's Rigidbody at the point of contact
+        Rigidbody collectorRigidbody = other.GetComponent<Rigidbody>();
+        if (collectorRigidbody == null) return 0;
+
+        float hitSpeed = collectorRigidbody.velocity.magnitude;
 
         // Normalize speed to give more points for higher speeds
         // Assuming maxSpeedScore is achieved at some max speed threshold, say 10 units/second
         float maxSpeedThreshold = 10f;
-        float speedPoints = Mathf.Min(maxSpeedScore, (punchSpeed / maxSpeedThreshold) * maxSpeedScore);
+        float speedPoints = Mathf.Min(maxSpeedScore, (hitSpeed / maxSpeedThreshold) * maxSpeedScore);
         Debug.Log($"Speed Points: {speedPoints}");
         return speedPoints;
     }
