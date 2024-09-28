@@ -1,9 +1,10 @@
-using System.Collections.ObjectModel;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events; // Import the UnityEvents namespace
 
 public class PunchArrow : MonoBehaviour
 {
-    public Transform collector; // Reference to the collector object (can be anything, not just player)
     public float idealCollectorDistance = 1.5f; // The ideal distance from the punch arrow
     public float maxTimingScore = 100f; // Maximum score for perfect timing
     public float maxSpeedScore = 100f; // Maximum score for punch speed
@@ -12,6 +13,9 @@ public class PunchArrow : MonoBehaviour
     public float maxAllowedAngle = 30f; // Maximum angle deviation (in degrees) for a valid hit
 
     private bool hitRegistered = false;
+
+    // Unity Event to trigger on hit
+    public UnityEvent onHit;
 
     public void OnTriggerEnter(Collider other)
     {
@@ -22,20 +26,20 @@ public class PunchArrow : MonoBehaviour
         if (collectorScript != null)
         {
             // Calculate angle first; if it's a miss, exit early
-            float anglePoints = CalculateAnglePoints(other);
+            float anglePoints = CalculateAnglePoints(collectorScript);
             if (anglePoints == 0)
             {
                 Debug.Log("Hit missed due to wrong angle.");
-                hitRegistered = true;
                 return; // Early exit as it's a miss
             }
 
             // Calculate all factors for point calculation
-            float timingPoints = CalculateTimingPoints();
             float speedPoints = CalculateSpeedPoints(other);
+            // Call the onHit event
+            onHit.Invoke();
 
             // Sum all points
-            float totalPoints = timingPoints + anglePoints + speedPoints;
+            float totalPoints = anglePoints + speedPoints;
             Debug.Log($"Hit Successful! Total Points: {totalPoints}");
 
             // Modify points in PointsManager if it exists
@@ -54,15 +58,14 @@ public class PunchArrow : MonoBehaviour
         if (collectorScript != null)
         {
             // Distance from the collector to the punch arrow
-            float distanceToCollector = (transform.position - collector.position).magnitude;
-            Debug.Log($"Distance to Collector: {distanceToCollector}");
+            float distanceToCollector = (transform.position - other.transform.position).magnitude;
         }
     }
 
-    private float CalculateTimingPoints()
+    private float CalculateTimingPoints(Collider other)
     {
         // Calculate the distance between the collector and the punch arrow
-        float distanceToCollector = (transform.position - collector.position).magnitude;
+        float distanceToCollector = (transform.position - other.transform.position).magnitude;
 
         // If the collector is farther than maxDistance, it's a miss and no points are awarded
         if (distanceToCollector > maxDistance)
@@ -81,19 +84,13 @@ public class PunchArrow : MonoBehaviour
         return timingPoints;
     }
 
-    private float CalculateAnglePoints(Collider other)
+    private float CalculateAnglePoints(Collector other)
     {
         // X-axis of the PunchArrow object (local forward direction)
         Vector3 punchArrowXAxis = transform.forward;
 
-        // Get the direction of the hit (collector's object velocity normalized)
-        Rigidbody collectorRigidbody = other.GetComponent<Rigidbody>();
-        if (collectorRigidbody == null) return 0;
-
-        Vector3 hitDirection = collectorRigidbody.velocity.normalized;
-
         // Calculate the angle between the hit direction and the object's X-axis
-        float angle = Vector3.Angle(hitDirection, punchArrowXAxis);
+        float angle = Vector3.Angle(other.CollectorVelocity, punchArrowXAxis);
 
         // If the angle is greater than the maxAllowedAngle, it's considered a miss
         if (angle > maxAllowedAngle)
@@ -117,7 +114,6 @@ public class PunchArrow : MonoBehaviour
         float hitSpeed = collectorRigidbody.velocity.magnitude;
 
         // Normalize speed to give more points for higher speeds
-        // Assuming maxSpeedScore is achieved at some max speed threshold, say 10 units/second
         float maxSpeedThreshold = 10f;
         float speedPoints = Mathf.Min(maxSpeedScore, (hitSpeed / maxSpeedThreshold) * maxSpeedScore);
         Debug.Log($"Speed Points: {speedPoints}");
