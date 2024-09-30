@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using BNG;
 using UnityEngine.Events;
+using TMPro;
 
 public class AutoAimGun : MonoBehaviour
 {
@@ -17,40 +18,41 @@ public class AutoAimGun : MonoBehaviour
     public Transform gunBarrel;                  // The point where the raycast shoots from
     public ParticleSystem muzzleFlash;           // Optional: Particle effect for shooting
     public AudioSource muzzleSound;
+    public AudioClip GunShotSound;
+    public float GunShotVolume = 1f;
+    public AudioSource ReloadSound;
+    public AudioClip GunReloadSound;
+    public float ReloadVolume = 1f;
     public int InternalAmmo = 30;
     public int MaxInternalAmmo = 30;
     public float RecoilDuration = 0.1f;          // Duration for recoil animation
     public Vector3 recoilAmount = new Vector3(0.05f, 0.05f, -0.1f); // Recoil direction and magnitude (customizable)
-    public Rigidbody weaponRigid;
     public Grabber thisGrabber;
-    public float GunShotVolume = 1f;
-    public AudioClip GunShotSound;
-    public UnityEvent onShootEvent;
-    public UnityEvent onReloadEvent;
+    
     public float triggerThreshold = 0.5f;
     private Transform closestEnemy;
     private bool canFire = true;  // Semi-auto control
     private InputBridge input;
-    private float bulletDamage = 1f;
+    [SerializeField] private float bulletDamage = 1f;
     public float fullAutoFireRate = 0.2f; // Delay between shots for full-auto
     private float nextFireTime = 0f;
-
     // Angle thresholds for reloading
     public float reloadAngleThreshold = 60f;   // How far up or down the barrel needs to point to trigger reload
     public float reloadCooldown = 2f;          // Time between reloads
     private float nextReloadTime = 0f;         // Timer for reload cooldown
-
     private Vector3 originalPosition;
     private Coroutine recoilCoroutine;
-
+    [SerializeField] private TMP_Text ammoText;
     public LineRenderer bulletTrailPrefab; // Assign this in the Inspector
     public float trailDuration = 0.5f;     // Duration before the trail fades
 
-
+    public UnityEvent onShootEvent;
+    public UnityEvent onReloadEvent;
     private void Awake()
     {
         input = InputBridge.Instance;
         originalPosition = transform.localPosition;  // Store the original position of the gun
+        UpdateAmmoCounter();
     }
 
     void Update()
@@ -156,13 +158,13 @@ public class AutoAimGun : MonoBehaviour
             if (((1 << hit.collider.gameObject.layer) & enemyLayer) != 0)
             {
                 Debug.Log("Enemy hit: " + hit.collider.name);
-                hitPoint = hit.point;
                 Damageable damageEnemy = hit.collider.gameObject.GetComponent<Damageable>();
                 if (damageEnemy != null) {
                     damageEnemy.DealDamage(bulletDamage);
                 }
                 // You can add damage logic here (like calling enemy's damage handler)
             }
+            hitPoint = hit.point;
         }
 
         // Create the bullet trail before applying recoil
@@ -190,6 +192,7 @@ public class AutoAimGun : MonoBehaviour
 
         // Decrease ammo
         InternalAmmo--;
+        UpdateAmmoCounter();
     }
     void CreateBulletTrail(Vector3 startPoint, Vector3 endPoint)
     {
@@ -278,13 +281,28 @@ public class AutoAimGun : MonoBehaviour
 
     public void Reload()
     {
-        InternalAmmo = MaxInternalAmmo;
-        Debug.Log("Gun reloaded!");
-
-        // Trigger reload event
-        if (onReloadEvent != null)
+        if (InternalAmmo != MaxInternalAmmo)
         {
-            onReloadEvent.Invoke();
+            InternalAmmo = MaxInternalAmmo;
+            UpdateAmmoCounter();
+            if (GunReloadSound != null && ReloadSound != null)
+            {
+                ReloadSound.PlayOneShot(GunReloadSound, ReloadVolume);
+            }
+            Debug.Log("Gun reloaded!");
+
+            // Trigger reload event
+            if (onReloadEvent != null)
+            {
+                onReloadEvent.Invoke();
+            }
+        }
+    }
+    public void UpdateAmmoCounter()
+    {
+        if (ammoText != null)
+        {
+            ammoText.text = $"{InternalAmmo}";
         }
     }
 }
