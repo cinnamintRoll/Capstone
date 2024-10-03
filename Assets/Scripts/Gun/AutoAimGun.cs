@@ -49,6 +49,7 @@ public class AutoAimGun : MonoBehaviour
     private float nextReloadTime = 0f;
     private Vector3 originalPosition;
     private Coroutine recoilCoroutine;
+    private bool hasReloaded = false;
     [SerializeField] private TMP_Text ammoText;
     public LineRenderer bulletTrailPrefab;
     public float trailDuration = 0.5f;
@@ -124,10 +125,15 @@ public class AutoAimGun : MonoBehaviour
         float angleUp = Vector3.Angle(gunBarrel.forward, Vector3.up);
         float angleDown = Vector3.Angle(gunBarrel.forward, Vector3.down);
 
-        if ((angleUp <= reloadAngleThreshold || angleDown <= reloadAngleThreshold) && Time.time >= nextReloadTime)
+        if ((angleUp <= reloadAngleThreshold || angleDown <= reloadAngleThreshold) && !hasReloaded && Time.time >= nextReloadTime)
         {
             Reload();
+            hasReloaded = true;
             nextReloadTime = Time.time + reloadCooldown;
+        }
+        else if (angleUp > reloadAngleThreshold && angleDown > reloadAngleThreshold)
+        {
+            hasReloaded = false;
         }
     }
 
@@ -152,9 +158,13 @@ public class AutoAimGun : MonoBehaviour
 
     void Fire()
     {
-        if (InternalAmmo <= 0)
+        if(InternalAmmo <= 3)
         {
             muzzleSound.PlayOneShot(EmptySound, EmptyVolume);
+        }
+        if (InternalAmmo <= 0)
+        {
+            
             if (gunAnimator)
             {
                 gunAnimator.SetBool("Empty",true); // Play empty animation if no ammo
@@ -251,7 +261,7 @@ public class AutoAimGun : MonoBehaviour
 
         recoilCoroutine = StartCoroutine(RecoilAnimation());
 
-        input.VibrateController(0.2f, 1f, 0.1f, thisGrabber.HandSide);
+        input.VibrateController(0.5f, 1f, 0.05f, thisGrabber.HandSide);
     }
 
     private IEnumerator RecoilAnimation()
