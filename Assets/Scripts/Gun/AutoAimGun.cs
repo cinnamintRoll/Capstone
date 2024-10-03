@@ -10,54 +10,65 @@ public class AutoAimGun : MonoBehaviour
     public enum FiringMode { SemiAuto, FullAuto }
     public FiringMode currentFiringMode = FiringMode.SemiAuto;
 
+    // Hand side (Left or Right)
+    public enum HandSide { LeftHand, RightHand }
+    public HandSide currentHandSide = HandSide.RightHand;
+
     // Public variables for customization
-    public float aimRange = 50f;                 // Max distance for enemy detection
-    public float aimAssistAngle = 15f;           // The field of view for auto-aim
-    public float shootRange = 100f;              // Range of the raycast
-    public LayerMask enemyLayer;                 // Layer to detect enemies
-    public Transform gunBarrel;                  // The point where the raycast shoots from
-    public ParticleSystem muzzleFlash;           // Optional: Particle effect for shooting
+    public float aimRange = 50f;
+    public float aimAssistAngle = 15f;
+    public float shootRange = 100f;
+    public LayerMask enemyLayer;
+    public Transform gunBarrel;
+    public ParticleSystem muzzleFlash;
     public AudioSource muzzleSound;
     public AudioClip GunShotSound;
     public float GunShotVolume = 1f;
+    public AudioClip EmptySound;
+    public float EmptyVolume = 1f;
     public AudioSource ReloadSound;
     public AudioClip GunReloadSound;
     public float ReloadVolume = 1f;
     public int InternalAmmo = 30;
     public int MaxInternalAmmo = 30;
-    public float RecoilDuration = 0.1f;          // Duration for recoil animation
-    public Vector3 recoilAmount = new Vector3(0.05f, 0.05f, -0.1f); // Recoil direction and magnitude (customizable)
+    public float RecoilDuration = 0.1f;
+    public Vector3 recoilAmount = new Vector3(0.05f, 0.05f, -0.1f);
+    public Vector3 recoilTiltAmount = new Vector3(-5f, 2f, 0); // Tilt rotation for recoil (x for pitch, y for yaw, z for roll)
+    private Quaternion originalRotation;
     public Grabber thisGrabber;
-    
+
     public float triggerThreshold = 0.5f;
     private Transform closestEnemy;
-    private bool canFire = true;  // Semi-auto control
+    private bool canFire = true; // Semi-auto control
     private InputBridge input;
     [SerializeField] private float bulletDamage = 1f;
-    public float fullAutoFireRate = 0.2f; // Delay between shots for full-auto
+    public float fullAutoFireRate = 0.2f;
     private float nextFireTime = 0f;
-    // Angle thresholds for reloading
-    public float reloadAngleThreshold = 60f;   // How far up or down the barrel needs to point to trigger reload
-    public float reloadCooldown = 2f;          // Time between reloads
-    private float nextReloadTime = 0f;         // Timer for reload cooldown
+    public float reloadAngleThreshold = 60f;
+    public float reloadCooldown = 2f;
+    private float nextReloadTime = 0f;
     private Vector3 originalPosition;
     private Coroutine recoilCoroutine;
     [SerializeField] private TMP_Text ammoText;
-    public LineRenderer bulletTrailPrefab; // Assign this in the Inspector
-    public float trailDuration = 0.5f;     // Duration before the trail fades
+    public LineRenderer bulletTrailPrefab;
+    public float trailDuration = 0.5f;
+    [SerializeField] private Animator gunAnimator;
 
     public UnityEvent onShootEvent;
     public UnityEvent onReloadEvent;
+
+    // Animator component
+
     private void Awake()
     {
         input = InputBridge.Instance;
-        originalPosition = transform.localPosition;  // Store the original position of the gun
+        originalPosition = transform.localPosition;
+        originalRotation = transform.localRotation; // Store the original rotation
         UpdateAmmoCounter();
     }
 
     void Update()
     {
-        // Handle firing based on the selected firing mode
         if (currentFiringMode == FiringMode.SemiAuto)
         {
             HandleSemiAutoFire();
@@ -73,46 +84,50 @@ public class AutoAimGun : MonoBehaviour
 
     bool IsTriggerPressed()
     {
-        return InputBridge.Instance.RightTrigger > triggerThreshold;
+        // Detect trigger press based on current hand side
+        if (currentHandSide == HandSide.RightHand)
+        {
+            return InputBridge.Instance.RightTrigger > triggerThreshold;
+        }
+        else
+        {
+            return InputBridge.Instance.LeftTrigger > triggerThreshold;
+        }
     }
 
     void HandleSemiAutoFire()
     {
-        // Semi-auto: fire only once per trigger press
         if (IsTriggerPressed() && canFire)
         {
             FindClosestEnemy();
             Fire();
             canFire = false;
-        }
+        } 
         else if (!IsTriggerPressed())
         {
-            canFire = true;  // Reset when trigger is released
+            canFire = true;
         }
     }
 
     void HandleFullAutoFire()
     {
-        // Full-auto: fire repeatedly while the trigger is held down
         if (IsTriggerPressed() && Time.time >= nextFireTime)
         {
             FindClosestEnemy();
             Fire();
-            nextFireTime = Time.time + fullAutoFireRate;  // Delay for next shot
+            nextFireTime = Time.time + fullAutoFireRate;
         }
     }
 
     void CheckForReload()
     {
-        // Get the angle between the gun barrel and the world's up direction
         float angleUp = Vector3.Angle(gunBarrel.forward, Vector3.up);
         float angleDown = Vector3.Angle(gunBarrel.forward, Vector3.down);
 
-        // Check if the gun is pointed up or down within the reload angle threshold
         if ((angleUp <= reloadAngleThreshold || angleDown <= reloadAngleThreshold) && Time.time >= nextReloadTime)
         {
             Reload();
-            nextReloadTime = Time.time + reloadCooldown;  // Set the cooldown for the next reload
+            nextReloadTime = Time.time + reloadCooldown;
         }
     }
 
@@ -127,7 +142,6 @@ public class AutoAimGun : MonoBehaviour
             Vector3 directionToEnemy = enemy.transform.position - gunBarrel.position;
             float angle = Vector3.Angle(gunBarrel.forward, directionToEnemy);
 
-            // Prioritize the enemy within the aim assist angle and the closest to the gun's forward direction
             if (angle < aimAssistAngle && angle < closestAngle)
             {
                 closestAngle = angle;
@@ -138,10 +152,20 @@ public class AutoAimGun : MonoBehaviour
 
     void Fire()
     {
-        // Ensure there is ammo
-        if (InternalAmmo <= 0) return;
+        if (InternalAmmo <= 0)
+        {
+            muzzleSound.PlayOneShot(EmptySound, EmptyVolume);
+            if (gunAnimator)
+            {
+                gunAnimator.SetBool("Empty",true); // Play empty animation if no ammo
+                gunAnimator.SetTrigger("Shoot");
+            }
+            return;
+        }
 
-        // Determine the shooting direction with aim assist
+        // Trigger the shoot animation
+        gunAnimator.SetTrigger("Shoot");
+
         Vector3 shootDirection = (closestEnemy != null)
             ? (closestEnemy.position - gunBarrel.position).normalized
             : gunBarrel.forward;
@@ -149,28 +173,21 @@ public class AutoAimGun : MonoBehaviour
         RaycastHit hit;
         Vector3 hitPoint = gunBarrel.position + shootDirection * shootRange;
 
-        // Raycast from gun barrel
         if (Physics.Raycast(gunBarrel.position, shootDirection, out hit, shootRange))
         {
-            Debug.DrawRay(gunBarrel.position, shootDirection * shootRange, Color.red, 1f);
-
-            // If hit an enemy
             if (((1 << hit.collider.gameObject.layer) & enemyLayer) != 0)
             {
-                Debug.Log("Enemy hit: " + hit.collider.name);
                 Damageable damageEnemy = hit.collider.gameObject.GetComponent<Damageable>();
-                if (damageEnemy != null) {
+                if (damageEnemy != null)
+                {
                     damageEnemy.DealDamage(bulletDamage);
                 }
-                // You can add damage logic here (like calling enemy's damage handler)
             }
             hitPoint = hit.point;
         }
 
-        // Create the bullet trail before applying recoil
         CreateBulletTrail(gunBarrel.position, hitPoint);
 
-        // Play the muzzle flash if assigned
         if (muzzleFlash != null)
         {
             muzzleFlash.Play();
@@ -181,123 +198,111 @@ public class AutoAimGun : MonoBehaviour
             muzzleSound.PlayOneShot(GunShotSound, GunShotVolume);
         }
 
-        // Apply recoil and haptics after creating the trail
         ApplyRecoil();
 
-        // Trigger shoot event
         if (onShootEvent != null)
         {
             onShootEvent.Invoke();
         }
 
-        // Decrease ammo
         InternalAmmo--;
         UpdateAmmoCounter();
+        if (InternalAmmo <= 0)
+        {
+            if (gunAnimator)
+            {
+                gunAnimator.SetBool("Empty", true); // Set empty animation when ammo is depleted
+            }
+        }
     }
+
     void CreateBulletTrail(Vector3 startPoint, Vector3 endPoint)
     {
-        // Instantiate the bullet trail prefab
         LineRenderer bulletTrail = Instantiate(bulletTrailPrefab);
-
-        // Make sure the trail is using world space
         bulletTrail.useWorldSpace = true;
-
-        // Set the start and end points of the trail
-        bulletTrail.SetPosition(0, startPoint);  // Ensure this is the exact position of the gun barrel
-        bulletTrail.SetPosition(1, endPoint);    // Set the end point where the bullet hit
-
-        // Start a coroutine to fade the trail over time (optional)
+        bulletTrail.SetPosition(0, startPoint);
+        bulletTrail.SetPosition(1, endPoint);
         StartCoroutine(FadeBulletTrail(bulletTrail));
     }
 
-
     IEnumerator FadeBulletTrail(LineRenderer bulletTrail)
     {
-        float duration = 0.5f; // The time it takes for the trail to disappear
+        float duration = 0.5f;
         float startWidth = bulletTrail.startWidth;
         float endWidth = bulletTrail.endWidth;
 
-        // Gradually reduce the alpha and width of the trail
         for (float t = 0; t < duration; t += Time.deltaTime)
         {
             float lerpFactor = t / duration;
-
-            // Fade out the width over time
             bulletTrail.startWidth = Mathf.Lerp(startWidth, 0f, lerpFactor);
             bulletTrail.endWidth = Mathf.Lerp(endWidth, 0f, lerpFactor);
-
-            // Optionally, you can fade out the color here as well (if using transparency)
             yield return null;
         }
 
-        // Destroy the trail after fading
         Destroy(bulletTrail.gameObject);
     }
 
-
-    // Recoil and Haptics
     private void ApplyRecoil()
     {
-        // Cancel any ongoing recoil effect
         if (recoilCoroutine != null)
         {
             StopCoroutine(recoilCoroutine);
         }
 
-        // Start the recoil effect
         recoilCoroutine = StartCoroutine(RecoilAnimation());
 
-        // Apply haptics
-        input.VibrateController(0.1f, 0.2f, 0.1f, thisGrabber.HandSide);
+        input.VibrateController(0.2f, 1f, 0.1f, thisGrabber.HandSide);
     }
 
-    // Coroutine to animate the recoil
     private IEnumerator RecoilAnimation()
     {
-        // Target recoil position based on recoilAmount (customizable Vector3)
         Vector3 recoilPosition = originalPosition + recoilAmount;
+        Quaternion recoilRotation = originalRotation * Quaternion.Euler(recoilTiltAmount); // Calculate the tilt rotation
 
-        // Animate recoil (backward and upward movement)
         float recoilTime = 0;
         while (recoilTime < RecoilDuration)
         {
             recoilTime += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(originalPosition, recoilPosition, recoilTime / RecoilDuration);
+            transform.localRotation = Quaternion.Lerp(originalRotation, recoilRotation, recoilTime / RecoilDuration); // Tilt the gun during recoil
             yield return null;
         }
 
-        // Animate return to original position
         recoilTime = 0;
         while (recoilTime < RecoilDuration)
         {
             recoilTime += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(recoilPosition, originalPosition, recoilTime / RecoilDuration);
+            transform.localRotation = Quaternion.Lerp(recoilRotation, originalRotation, recoilTime / RecoilDuration); // Return the gun back to its original rotation
             yield return null;
         }
 
-        // Ensure the final position is set to original
         transform.localPosition = originalPosition;
+        transform.localRotation = originalRotation; // Ensure the gun returns to its exact original rotation
     }
 
     public void Reload()
     {
         if (InternalAmmo != MaxInternalAmmo)
         {
+            if (gunAnimator)
+            {
+                gunAnimator.SetBool("Empty", false);
+            }
             InternalAmmo = MaxInternalAmmo;
             UpdateAmmoCounter();
             if (GunReloadSound != null && ReloadSound != null)
             {
                 ReloadSound.PlayOneShot(GunReloadSound, ReloadVolume);
             }
-            Debug.Log("Gun reloaded!");
 
-            // Trigger reload event
             if (onReloadEvent != null)
             {
                 onReloadEvent.Invoke();
             }
         }
     }
+
     public void UpdateAmmoCounter()
     {
         if (ammoText != null)
