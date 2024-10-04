@@ -11,7 +11,7 @@ public class PunchArrow : MonoBehaviour
     public float maxAngleScore = 100f; // Maximum score for perfect angle
     public float maxDistance = 3.0f; // Maximum distance before it's considered a miss
     public float maxAllowedAngle = 30f; // Maximum angle deviation (in degrees) for a valid hit
-
+    public Transform ObjectVisuals;
     private bool hitRegistered = false;
 
     // Unity Event to trigger on hit
@@ -30,6 +30,7 @@ public class PunchArrow : MonoBehaviour
             if (anglePoints == 0)
             {
                 Debug.Log("Hit missed due to wrong angle.");
+                hitRegistered = true;
                 return; // Early exit as it's a miss
             }
 
@@ -49,6 +50,21 @@ public class PunchArrow : MonoBehaviour
             }
 
             hitRegistered = true; // Prevent multiple hits from being registered
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        Collector collectorScript = other.GetComponent<Collector>();
+        if (collectorScript != null)
+        {
+            if (hitRegistered)
+            {
+                if (ObjectVisuals = null)
+                {
+                    Destroy(gameObject);
+                }
+            }
         }
     }
 
