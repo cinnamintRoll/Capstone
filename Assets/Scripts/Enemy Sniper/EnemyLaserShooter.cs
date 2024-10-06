@@ -12,7 +12,9 @@ public class EnemyLaserShooter : MonoBehaviour
     public LayerMask deflectLayer; // Layer for detecting player's weapon
     public float playerDamage = 10f; // Damage to apply to player
     public AudioClip deflectionSound; // Sound to play on deflection
-    private AudioSource audioSource; // AudioSource component reference
+    public AudioClip chargeSound; // Sound to play while charging
+    public AudioClip shootSound; // Sound to play when shooting
+    public AudioSource audioSource; // AudioSource component reference
     public GameObject visuals;
 
     public float laserOffsetWidth = 1f; // Width of the offset for the laser
@@ -37,7 +39,6 @@ public class EnemyLaserShooter : MonoBehaviour
             SetPlayer(GameObject.FindWithTag("PlayerHead"));
         }
         // Get the AudioSource component attached to this GameObject
-        audioSource = GetComponent<AudioSource>();
         laser.startColor = laserColorNormal; // Set the initial color of the laser
         laser.endColor = laserColorNormal;
         laser.startWidth = initialLaserWidth; // Set initial laser width
@@ -86,6 +87,7 @@ public class EnemyLaserShooter : MonoBehaviour
             }
         }
     }
+
     // Update the laser to point towards the player
     void UpdateLaser()
     {
@@ -106,6 +108,7 @@ public class EnemyLaserShooter : MonoBehaviour
                 laser.SetPosition(1, hit.point);
                 if (((1 << hit.collider.gameObject.layer) & deflectLayer) != 0)
                 {
+                    audioSource.Stop();
                     DeflectShot(hit.point);
                 }
             }
@@ -121,6 +124,11 @@ public class EnemyLaserShooter : MonoBehaviour
     IEnumerator ShootAfterDelay()
     {
         isShooting = true;
+
+        // Start playing the charging sound on loop
+        audioSource.clip = chargeSound;
+        audioSource.loop = true;
+        audioSource.Play();
 
         // Charge up effect
         float chargeElapsed = 0f;
@@ -141,8 +149,14 @@ public class EnemyLaserShooter : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
+        // Stop the charging sound before shooting
+        audioSource.PlayOneShot(shootSound);
+
         // White shooting beam with animated expansion and contraction
         yield return StartCoroutine(AnimateShootBeam());
+
+        // Play shooting sound
+       
 
         // Now shoot the laser (apply damage or any action here)
         ShootPlayer();
