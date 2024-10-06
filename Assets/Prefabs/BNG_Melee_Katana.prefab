@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2161966695677365251}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: BladeStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2909854447190049576}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: BladeEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,6 +73,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 7276ff191256962448d44af85114a1f7, type: 3}
       propertyPath: m_Name
       value: BNG_Melee_Katana
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 7276ff191256962448d44af85114a1f7, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 7276ff191256962448d44af85114a1f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -167,6 +171,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   rayExtension: 0.01
+  sliceSound: {fileID: 8300000, guid: d85eea887fb0cd4418a91db9d5217751, type: 3}
+  minPitch: 0.8
+  maxPitch: 1.2
 --- !u!65 &8305577213521387930
 BoxCollider:
   m_ObjectHideFlags: 0

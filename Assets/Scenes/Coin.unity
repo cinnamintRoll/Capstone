@@ -3532,25 +3532,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2014454303}
     m_Modifications:
-    - target: {fileID: 2979321916767113343, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
+    - target: {fileID: 1398292124317172399, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
         type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 4380982278280703141, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
+      propertyPath: sliceSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d85eea887fb0cd4418a91db9d5217751, type: 3}
     - target: {fileID: 4596040105683089688, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
         type: 3}
       propertyPath: m_Name
       value: BNG_Melee_Katana
-      objectReference: {fileID: 0}
-    - target: {fileID: 4596040105683089688, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4596040105683576120, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
         type: 3}
