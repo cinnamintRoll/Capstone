@@ -14,6 +14,15 @@ public class DespawnAfterSlice : MonoBehaviour
     {
         // Start the despawn process after the specified delay
         Invoke(nameof(StartShrinking), delayBeforeShrink);
+
+        // Set the layer to "Slicable" after 0.5 seconds
+        Invoke(nameof(SetSlicableLayer), 0.3f);
+    }
+
+    void SetSlicableLayer()
+    {
+        // Set the gameObject to the "Slicable" layer (assuming the layer is already defined in the project)
+        gameObject.layer = LayerMask.NameToLayer("Slicable");
     }
 
     void StartShrinking()

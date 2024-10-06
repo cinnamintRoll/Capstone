@@ -75,7 +75,7 @@ public class SliceObject : MonoBehaviour
         // Add necessary components to the sliced object
         hull.AddComponent<MeshCollider>().convex = true;  // Add collider
         Rigidbody rb = hull.AddComponent<Rigidbody>();                   // Add rigidbody for physics
-        hull.layer = 12;
+        //hull.layer = 12;
         // Apply explosion force to the rigidbody
         rb.AddExplosionForce(cutForce, originalObject.transform.position, 1f);
     }
