@@ -3132,51 +3132,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2149581164651775472, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
+        type: 3}
+      propertyPath: panLevelCustomCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
         type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1518060143}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: shootLaserWidth
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: chargeLaserWidth
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: shootBeamColor.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: shootBeamColor.g
-      value: 0.98004615
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: shootBeamColor.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: initialLaserWidth
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: laserColorNormal.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3433925356662281964, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
-        type: 3}
-      propertyPath: laserColorNormal.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6534503280532838713, guid: 51e4372ec740e7c42bd84bf1e83e96b0,
         type: 3}
       propertyPath: m_LocalPosition.x
