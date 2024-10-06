@@ -18,7 +18,7 @@ public class PathFollower : MonoBehaviour
 
     void Start()
     {
-        CreatePathParent();
+        //CreatePathParent();
         ComputeSamplePoints();
         CalculateTimingLineSpacing();
     }
