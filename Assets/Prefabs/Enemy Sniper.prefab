@@ -440,7 +440,12 @@ MonoBehaviour:
   laserOffsetWidth: 5.3
   chargeTime: 3
   laserColorCharged: {r: 1, g: 0, b: 0, a: 1}
-  laserColorNormal: {r: 0, g: 1, b: 0, a: 1}
+  laserColorNormal: {r: 1, g: 1, b: 1, a: 1}
+  shootBeamColor: {r: 1, g: 1, b: 1, a: 1}
+  initialLaserWidth: 0.01
+  chargeLaserWidth: 0.1
+  shootLaserWidth: 0.2
+  bigBeamDuration: 0.2
 --- !u!1 &7209850760775582231
 GameObject:
   m_ObjectHideFlags: 0
