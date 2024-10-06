@@ -19,32 +19,35 @@ public class EnemyLaserShooter : MonoBehaviour
     public float chargeTime = 1f; // Duration of the charge-up effect
     public Color laserColorCharged = Color.red; // Color of the charged laser
     public Color laserColorNormal = Color.green; // Color of the normal laser
-    private bool isShooting = false;
+    public Color shootBeamColor = Color.white; // Color of the beam when shooting
 
+    // Width settings for the laser
+    public float initialLaserWidth = 0.05f; // Initial width of the laser
+    public float chargeLaserWidth = 0.2f; // Maximum width during the charge-up phase
+    public float shootLaserWidth = 0.4f; // Width of the white beam during shooting
+    public float bigBeamDuration = 0.2f; // Duration of the big beam effect
+
+    private bool isShooting = false;
     private Vector3 laserOffset; // Fixed laser offset
 
     void Start()
     {
+        if (!player)
+        {
+            SetPlayer(GameObject.FindWithTag("PlayerHead"));
+        }
         // Get the AudioSource component attached to this GameObject
         audioSource = GetComponent<AudioSource>();
         laser.startColor = laserColorNormal; // Set the initial color of the laser
         laser.endColor = laserColorNormal;
+        laser.startWidth = initialLaserWidth; // Set initial laser width
+        laser.endWidth = initialLaserWidth;
+        UpdateLaserOffset();
+    }
 
-        // Calculate fixed laser offset based on player's position relative to the enemy
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
-        Vector3 offsetDirection = Vector3.Cross(directionToPlayer, Vector3.up).normalized; // Perpendicular direction for offset
-        float offsetAmount = 0.5f; // Set the offset distance (adjust this value as needed)
-
-        // Determine if the player is on the left or right side
-        float dotProduct = Vector3.Dot(offsetDirection, directionToPlayer);
-        if (dotProduct > 0) // Player is on the right side
-        {
-            laserOffset = -offsetDirection * offsetAmount; // Positive offset
-        }
-        else // Player is on the left side
-        {
-            laserOffset = offsetDirection * offsetAmount; // Negative offset
-        }
+    public void SetPlayer(GameObject Object)
+    {
+        player = Object.transform;
     }
 
     void Update()
@@ -64,6 +67,25 @@ public class EnemyLaserShooter : MonoBehaviour
         gun.rotation = Quaternion.LookRotation(direction);
     }
 
+    private void UpdateLaserOffset()
+    {
+        // Only calculate offset if player is assigned
+        if (player != null)
+        {
+            Vector3 directionToPlayer = (player.position - transform.position).normalized;
+            float offsetAmount = 0.5f; // Set the offset distance (adjust this value as needed)
+
+            // Determine offset direction based on the player's position
+            if (Vector3.Dot(Vector3.right, directionToPlayer) > 0) // Player is on the right side
+            {
+                laserOffset = Vector3.Cross(directionToPlayer, Vector3.up) * offsetAmount; // Right offset
+            }
+            else // Player is on the left side
+            {
+                laserOffset = -Vector3.Cross(directionToPlayer, Vector3.up) * offsetAmount; // Left offset
+            }
+        }
+    }
     // Update the laser to point towards the player
     void UpdateLaser()
     {
@@ -82,7 +104,7 @@ public class EnemyLaserShooter : MonoBehaviour
             {
                 Debug.DrawLine(gunMuzzle.position, hit.point, Color.red);
                 laser.SetPosition(1, hit.point);
-                if (hit.collider != null && (((1 << hit.collider.gameObject.layer) & deflectLayer) != 0))
+                if (((1 << hit.collider.gameObject.layer) & deflectLayer) != 0)
                 {
                     DeflectShot(hit.point);
                 }
@@ -111,17 +133,69 @@ public class EnemyLaserShooter : MonoBehaviour
             laser.startColor = Color.Lerp(laserColorNormal, laserColorCharged, t);
             laser.endColor = Color.Lerp(laserColorNormal, laserColorCharged, t);
 
+            // Gradually increase the laser width during the charge-up phase
+            float currentWidth = Mathf.Lerp(initialLaserWidth, chargeLaserWidth, t);
+            laser.startWidth = currentWidth;
+            laser.endWidth = currentWidth;
+
             yield return null; // Wait for the next frame
         }
 
-        // Reset laser color back to normal after charging
+        // White shooting beam with animated expansion and contraction
+        yield return StartCoroutine(AnimateShootBeam());
+
+        // Now shoot the laser (apply damage or any action here)
+        ShootPlayer();
+
+        // Reset laser width and color back to normal after shooting
+        laser.startWidth = initialLaserWidth;
+        laser.endWidth = initialLaserWidth;
         laser.startColor = laserColorNormal;
         laser.endColor = laserColorNormal;
 
-        // Now shoot the laser
-        ShootPlayer();
-
         isShooting = false;
+    }
+
+    // Function to animate the shoot beam expanding quickly and reverting back
+    IEnumerator AnimateShootBeam()
+    {
+        float expandTime = 0.1f; // Time to expand the beam
+        float contractTime = 0.1f; // Time to contract the beam
+
+        // Expand phase
+        float elapsedTime = 0f;
+        while (elapsedTime < expandTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / expandTime;
+
+            // Increase laser width to shootLaserWidth
+            float currentWidth = Mathf.Lerp(chargeLaserWidth, shootLaserWidth, t);
+            laser.startWidth = currentWidth;
+            laser.endWidth = currentWidth;
+
+            laser.startColor = shootBeamColor; // Set the beam color to white
+            laser.endColor = shootBeamColor;
+
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(bigBeamDuration); // Hold the big beam for a short duration
+
+        // Contract phase
+        elapsedTime = 0f;
+        while (elapsedTime < contractTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / contractTime;
+
+            // Reduce laser width back to chargeLaserWidth
+            float currentWidth = Mathf.Lerp(shootLaserWidth, chargeLaserWidth, t);
+            laser.startWidth = currentWidth;
+            laser.endWidth = currentWidth;
+
+            yield return null;
+        }
     }
 
     // Function to apply damage to the player

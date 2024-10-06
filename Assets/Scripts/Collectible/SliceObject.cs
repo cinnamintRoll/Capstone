@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using EzySlice;
+using System.Net;
 
 public class SliceObject : MonoBehaviour
 {
     // Reference to the start and end points of the blade (assign in the inspector or dynamically)
     public Transform bladeStart;
     public Transform bladeEnd;
-    public Collector collector;
+    public VelocityEstimator velocityEstimator;
 
     // Reference to a material used for the cross-section (cut faces)
     public Material crossSectionMaterial;
@@ -36,36 +37,24 @@ public class SliceObject : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        float distance = Vector3.Distance(bladeStart.position, bladeEnd.position) + rayExtension;
         Debug.DrawLine(bladeStart.position, bladeEnd.position, Color.red);
 
-        if (Physics.Raycast(bladeStart.position, bladeEnd.position, out RaycastHit hit, distance, sliceableLayer))
+        if (Physics.Linecast(bladeStart.position, bladeEnd.position, out RaycastHit hit, sliceableLayer))
         {
             GameObject sliceableObject = hit.collider.gameObject;
-
-            // Perform the slice at the point of impact
-            Vector3 slicePosition = hit.point;
-            Vector3 sliceNormal = bladeEnd.position - bladeStart.position;  // Slice plane along the blade direction
-
-            // Slice the object
-            Slice(sliceableObject, slicePosition, sliceNormal);
+            Slice(sliceableObject);
         }
     }
 
-    public void Slice(GameObject sliceableObject, Vector3 slicePosition, Vector3 sliceNormal)
+    public void Slice(GameObject sliceableObject)
     {
-        // Make sure the object has a MeshFilter and MeshRenderer
-        MeshFilter meshFilter = sliceableObject.GetComponent<MeshFilter>();
-        MeshRenderer meshRenderer = sliceableObject.GetComponent<MeshRenderer>();
-        Vector3 planeNormal = Vector3.Cross(slicePosition, collector.CollectorVelocity);
+        Vector3 velocity = velocityEstimator.GetVelocityEstimate();
+        Vector3 planeNormal = Vector3.Cross(bladeEnd.position - bladeStart.position, velocity);
         planeNormal.Normalize();
 
-        if (meshFilter != null && meshRenderer != null)
-        {
-            // Use EzySlice to perform the cut
-            SlicedHull slicedObject = sliceableObject.Slice(slicePosition, planeNormal, crossSectionMaterial);
+        SlicedHull slicedObject = sliceableObject.Slice(bladeEnd.position, planeNormal, crossSectionMaterial);
 
             if (slicedObject != null)
             {
@@ -85,7 +74,6 @@ public class SliceObject : MonoBehaviour
                 // Optionally, destroy the original object
                 Destroy(sliceableObject);
             }
-        }
     }
 
     // Helper function to configure the newly created slice objects
