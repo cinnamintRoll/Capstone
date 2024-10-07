@@ -42,21 +42,34 @@ namespace BNG
                 {
                     if (leverVector.x > 0)
                     {
-                        currentQualityIndex = Mathf.Min(currentQualityIndex + 1, qualityLevels.Count - 1);
-                        Debug.Log("Quality Setting moved to rigth");
+                        NextGraphicsSetting();
                     }
                     else if (leverVector.x < 0)
                     {
-                        currentQualityIndex = Mathf.Max(currentQualityIndex - 1, 0);
-                        Debug.Log("Quality Setting moved left");
+                        PreviousGraphicsSetting();
                     }
-                    
-                    QualitySettings.SetQualityLevel(currentQualityIndex);
-                    UpdateQualityText();
 
                     previousXInput = leverVector.x;
                 }
             }
+        }
+
+        public void NextGraphicsSetting()
+        {
+            // Increment quality level
+            currentQualityIndex = Mathf.Min(currentQualityIndex + 1, qualityLevels.Count - 1);
+            QualitySettings.SetQualityLevel(currentQualityIndex);
+            UpdateQualityText();
+            Debug.Log("Graphics Quality increased to " + qualityLevels[currentQualityIndex]);
+        }
+
+        public void PreviousGraphicsSetting()
+        {
+            // Decrement quality level
+            currentQualityIndex = Mathf.Max(currentQualityIndex - 1, 0);
+            QualitySettings.SetQualityLevel(currentQualityIndex);
+            UpdateQualityText();
+            Debug.Log("Graphics Quality decreased to " + qualityLevels[currentQualityIndex]);
         }
 
         void UpdateQualityText()
