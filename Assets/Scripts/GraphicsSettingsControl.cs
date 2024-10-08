@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 namespace BNG
 {
-
     public class GraphicsSettingsControl : MonoBehaviour, ISelectHandler, IDeselectHandler
     {
 
@@ -28,7 +27,16 @@ namespace BNG
         {
             // Initialize quality levels
             qualityLevels = new List<string>(QualitySettings.names);
-            currentQualityIndex = QualitySettings.GetQualityLevel();
+            Settings settings = Settings.Instance;
+            if (settings != null)
+            {
+                currentQualityIndex = settings.QualityIndex;
+            }
+            else
+            {
+                currentQualityIndex = QualitySettings.GetQualityLevel();
+            }
+
             UpdateQualityText();
         }
 
@@ -58,18 +66,23 @@ namespace BNG
         {
             // Increment quality level
             currentQualityIndex = Mathf.Min(currentQualityIndex + 1, qualityLevels.Count - 1);
-            QualitySettings.SetQualityLevel(currentQualityIndex);
-            UpdateQualityText();
-            Debug.Log("Graphics Quality increased to " + qualityLevels[currentQualityIndex]);
+            SetQualityLevel(currentQualityIndex);
         }
 
         public void PreviousGraphicsSetting()
         {
             // Decrement quality level
             currentQualityIndex = Mathf.Max(currentQualityIndex - 1, 0);
-            QualitySettings.SetQualityLevel(currentQualityIndex);
-            UpdateQualityText();
-            Debug.Log("Graphics Quality decreased to " + qualityLevels[currentQualityIndex]);
+            SetQualityLevel(currentQualityIndex);
+        }
+
+        // New function to handle setting the quality level
+        private void SetQualityLevel(int index)
+        {
+            QualitySettings.SetQualityLevel(index);  // Set quality in Unity
+            Settings.Instance.SetQualityLevel(index);  // Update quality in Settings
+            UpdateQualityText();  // Update the UI
+            Debug.Log("Graphics Quality set to " + qualityLevels[index]);
         }
 
         void UpdateQualityText()
