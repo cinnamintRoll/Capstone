@@ -1920,8 +1920,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 9043919033648859875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.442, y: 0}
+  m_AnchorMax: {x: 0.442, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2493,7 +2493,7 @@ RectTransform:
   m_Father: {fileID: 8445364315595634860}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.442, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: -6.15}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2963,7 +2963,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1727247401803914072
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3165,7 +3165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8770620466182583375
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4232,7 +4232,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &4240149808926901682
 MonoBehaviour:
@@ -5019,6 +5019,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 827683933, guid: 573035707f1c73e4d9eb9200a3753248,
         type: 3}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4801455481683674651}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Select
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.UI.Selectable, UnityEngine.UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439808379678329575, guid: 289f8ab63c2c7104999a2fc7109321bf,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5052,7 +5087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3fd34c738731494694e2e174cbca38a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSelectButton: {fileID: 0}
+  targetSelectButton: {fileID: 4801455481683674651}
   PanelsTurnOn:
   - {fileID: 3020442609524430826}
   PanelsTurnOff:
