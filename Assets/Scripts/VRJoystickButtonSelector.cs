@@ -12,7 +12,7 @@ namespace BNG
         public float inputDelay = 0.2f; // Delay to avoid rapid navigation
         private float lastInputTime;
         [SerializeField] private UnityEngine.UI.Button StartingButton;
-
+        public float sliderStep = 0.1f; // Amount to move the slider
         private Vector2 lastJoystickVector; // Track the previous joystick input
         public bool singleSelectMode = true; // Toggle for single select mode
 
@@ -77,26 +77,55 @@ namespace BNG
         // Handles the actual selection based on the joystick vector
         private void HandleSelection(GameObject currentSelected, Vector2 joystickVector)
         {
-            if (joystickVector.y > 0.5f)
-            {
-                // Move Up
-                SelectButton(currentSelected, MoveDirection.Up);
-            }
-            else if (joystickVector.y < -0.5f)
-            {
-                // Move Down
-                SelectButton(currentSelected, MoveDirection.Down);
-            }
+            // Check if the currently selected UI element is a Slider
+            UnityEngine.UI.Slider selectedSlider = currentSelected.GetComponent<UnityEngine.UI.Slider>();
 
-            if (joystickVector.x > 0.5f)
+            if (selectedSlider != null)
             {
-                // Move Right
-                SelectButton(currentSelected, MoveDirection.Right);
+                // If it's a slider, modify its value based on joystick input
+                if (joystickVector.x > 0.5f)
+                {
+                    IncrementSlider(selectedSlider, sliderStep); // Move slider incrementally to the right
+                }
+                else if (joystickVector.x < -0.5f)
+                {
+                    IncrementSlider(selectedSlider, -sliderStep); // Move slider incrementally to the left
+                }
+                if (joystickVector.y > 0.5f)
+                {
+                    // Move Up
+                    SelectButton(currentSelected, MoveDirection.Up);
+                }
+                else if (joystickVector.y < -0.5f)
+                {
+                    // Move Down
+                    SelectButton(currentSelected, MoveDirection.Down);
+                }
             }
-            else if (joystickVector.x < -0.5f)
+            else
             {
-                // Move Left
-                SelectButton(currentSelected, MoveDirection.Left);
+                // If it's not a slider, handle the button selection
+                if (joystickVector.y > 0.5f)
+                {
+                    // Move Up
+                    SelectButton(currentSelected, MoveDirection.Up);
+                }
+                else if (joystickVector.y < -0.5f)
+                {
+                    // Move Down
+                    SelectButton(currentSelected, MoveDirection.Down);
+                }
+
+                if (joystickVector.x > 0.5f)
+                {
+                    // Move Right
+                    SelectButton(currentSelected, MoveDirection.Right);
+                }
+                else if (joystickVector.x < -0.5f)
+                {
+                    // Move Left
+                    SelectButton(currentSelected, MoveDirection.Left);
+                }
             }
         }
 
@@ -135,6 +164,12 @@ namespace BNG
                     OnSelectionMoved?.Invoke(nextSelectable.gameObject, direction);
                 }
             }
+        }
+
+        // Increment or decrement the slider
+        private void IncrementSlider(UnityEngine.UI.Slider slider, float step)
+        {
+            slider.value = Mathf.Clamp(slider.value + step, slider.minValue, slider.maxValue);
         }
 
         public void DestinationButton(UnityEngine.UI.Button destinationButton)
