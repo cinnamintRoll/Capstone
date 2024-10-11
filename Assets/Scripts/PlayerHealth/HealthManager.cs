@@ -15,6 +15,7 @@ public class PlayerHealth : MonoBehaviour
     private float maxHealthPerLife = 100f;  // Each life corresponds to 100% health
     private float currentHealth;
 
+    [SerializeField] private Animator DamageAnimator;
     void Start()
     {
         currentLives = maxLives;
@@ -63,6 +64,8 @@ public class PlayerHealth : MonoBehaviour
             Debug.Log("Player is dead");
             PlayerDeath();
         }
+
+        DamageAnimator.SetTrigger("TakeDamage");
 
         UpdateKillCountText();
         UpdateSliders();
