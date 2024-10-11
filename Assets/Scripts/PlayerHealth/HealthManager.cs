@@ -11,7 +11,7 @@ public class PlayerHealth : MonoBehaviour
 
     public int killsToRestoreLife = 5;  // Number of kills required to restore one life
     private int currentKillCount;
-
+    [SerializeField] private GameMenu gameMenu;
     private float maxHealthPerLife = 100f;  // Each life corresponds to 100% health
     private float currentHealth;
 
@@ -61,6 +61,7 @@ public class PlayerHealth : MonoBehaviour
         {
             // Handle death logic
             Debug.Log("Player is dead");
+            PlayerDeath();
         }
 
         UpdateKillCountText();
@@ -108,5 +109,10 @@ public class PlayerHealth : MonoBehaviour
     public void DebugKillEnemy()
     {
         KillEnemy();  // Simulate killing an enemy
+    }
+
+    public void PlayerDeath()
+    {
+        gameMenu.TriggerDeathMenu();
     }
 }
