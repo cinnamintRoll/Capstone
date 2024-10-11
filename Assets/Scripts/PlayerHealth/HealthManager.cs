@@ -4,22 +4,35 @@ using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxLives = 3;
-    private int currentLives;
-    public Slider[] lifeSliders;  // Two sliders representing the lives
-    public TMP_Text killsRemainingText;
+    public static PlayerHealth Instance { get; private set; }
+    [SerializeField] private int maxLives = 3;
+    [SerializeField] private int currentLives;
+    [SerializeField] private Slider[] lifeSliders;  // Two sliders representing the lives
+    [SerializeField] private TMP_Text killsRemainingText;
 
-    public int killsToRestoreLife = 5;  // Number of kills required to restore one life
+    [SerializeField] private int killsToRestoreLife = 5;  // Number of kills required to restore one life
     private int currentKillCount;
     [SerializeField] private GameMenu gameMenu;
-    private float maxHealthPerLife = 100f;  // Each life corresponds to 100% health
     private float currentHealth;
 
     [SerializeField] private Animator DamageAnimator;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;  // Set this as the Singleton instance
+        }
+        else
+        {
+            Destroy(gameObject);  // Ensure there's only one instance
+        }
+    }
+
+
     void Start()
     {
         currentLives = maxLives;
-        currentHealth = maxHealthPerLife;
         UpdateSliders();
         UpdateKillCountText();
     }
@@ -34,7 +47,7 @@ public class PlayerHealth : MonoBehaviour
             }
             else if (i == currentLives - 1)
             {
-                lifeSliders[i].value = currentHealth / maxHealthPerLife;  // Current life fills based on health
+                lifeSliders[i].value = currentHealth;  // Current life fills based on health
             }
             else
             {
@@ -49,7 +62,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     // Damage instantly removes a full life
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage()
     {
         if (currentLives > 0)
         {
@@ -82,7 +95,7 @@ public class PlayerHealth : MonoBehaviour
             // Gradually fill up the current health bar based on kills if we're working on restoring a life
             if (currentKillCount < killsToRestoreLife)
             {
-                currentHealth = (float)currentKillCount / killsToRestoreLife * maxHealthPerLife;
+                currentHealth = (float)currentKillCount / killsToRestoreLife;
             }
             else
             {
@@ -106,7 +119,7 @@ public class PlayerHealth : MonoBehaviour
     // Debug methods for the Inspector buttons
     public void DebugTakeDamage()
     {
-        TakeDamage(100f);  // Arbitrary damage for full bar removal
+        TakeDamage();  // Arbitrary damage for full bar removal
     }
 
     public void DebugKillEnemy()

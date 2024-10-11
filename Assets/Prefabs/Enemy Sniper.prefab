@@ -517,6 +517,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6534503280532838713}
   - component: {fileID: 3433925356662281964}
+  - component: {fileID: 3514603933804737496}
   m_Layer: 0
   m_Name: Enemy Sniper
   m_TagString: Untagged
@@ -555,29 +556,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  gun: {fileID: 5109911792631638738}
   gunMuzzle: {fileID: 3463262009099617377}
   laser: {fileID: 8993609155406428589}
   laserRange: 50
   aimDuration: 2
-  deflectLayer:
-    serializedVersion: 2
-    m_Bits: 8192
   playerDamage: 10
   deflectionSound: {fileID: 8300000, guid: 83dc0287d0634ed4cb587d44b592210c, type: 3}
   chargeSound: {fileID: 8300000, guid: c134a11450fb62e45b1f282d277c7c9a, type: 3}
   shootSound: {fileID: 8300000, guid: eb85c3f0cae455341b23310e7936c473, type: 3}
   audioSource: {fileID: 2149581164651775472}
   visuals: {fileID: 2392884671347678885}
-  laserOffsetWidth: 5.3
-  chargeTime: 3
+  offsetAmount: 0.5
   laserColorCharged: {r: 1, g: 0, b: 0, a: 1}
   laserColorNormal: {r: 1, g: 1, b: 1, a: 1}
   shootBeamColor: {r: 1, g: 0.98004615, b: 0, a: 1}
+  aimRotationOffset: {x: -0.5, y: 0, z: 0}
   initialLaserWidth: 0.01
   chargeLaserWidth: 0.1
   shootLaserWidth: 0.2
   bigBeamDuration: 0.2
+  aimDelay: 1
+  deflectLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+--- !u!136 &3514603933804737496
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6797702779634047482}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.03
+  m_Height: 19.29731
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 9.148655}
 --- !u!1 &7209850760775582231
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,32 +3,29 @@ using UnityEngine;
 
 public class EnemyLaserShooter : MonoBehaviour
 {
-    public Transform player; // Reference to the player
-    public Transform gun; // The enemy's gun
-    public Transform gunMuzzle; // Position where the laser starts (muzzle of the gun)
-    public LineRenderer laser; // Laser LineRenderer
-    public float laserRange = 50f; // Maximum range of the laser
-    public float aimDuration = 2f; // Time before shooting
-    public LayerMask deflectLayer; // Layer for detecting player's weapon
-    public float playerDamage = 10f; // Damage to apply to player
-    public AudioClip deflectionSound; // Sound to play on deflection
-    public AudioClip chargeSound; // Sound to play while charging
-    public AudioClip shootSound; // Sound to play when shooting
-    public AudioSource audioSource; // AudioSource component reference
-    public GameObject visuals;
-
-    public float laserOffsetWidth = 1f; // Width of the offset for the laser
-    public float chargeTime = 1f; // Duration of the charge-up effect
-    public Color laserColorCharged = Color.red; // Color of the charged laser
-    public Color laserColorNormal = Color.green; // Color of the normal laser
-    public Color shootBeamColor = Color.white; // Color of the beam when shooting
-
-    // Width settings for the laser
-    public float initialLaserWidth = 0.05f; // Initial width of the laser
-    public float chargeLaserWidth = 0.2f; // Maximum width during the charge-up phase
-    public float shootLaserWidth = 0.4f; // Width of the white beam during shooting
-    public float bigBeamDuration = 0.2f; // Duration of the big beam effect
-
+    [SerializeField] private Transform player; // Reference to the player
+    [SerializeField] private Transform gunMuzzle; // Position where the laser starts (muzzle of the gun)
+    [SerializeField] private LineRenderer laser; // Laser LineRenderer
+    [SerializeField] private float laserRange = 50f; // Maximum range of the laser
+    [SerializeField] private float aimDuration = 2f; // Time before shooting
+    [SerializeField] private float playerDamage = 10f; // Damage to apply to player
+    [SerializeField] private AudioClip deflectionSound; // Sound to play on deflection
+    [SerializeField] private AudioClip chargeSound; // Sound to play while charging
+    [SerializeField] private AudioClip shootSound; // Sound to play when shooting
+    [SerializeField] private AudioSource audioSource; // AudioSource component reference
+    [SerializeField] private GameObject visuals;
+    [SerializeField] private float offsetAmount = 0.5f; // Set the offset distance (adjust this value as needed)
+    [SerializeField] private Color laserColorCharged = Color.red; // Color of the charged laser
+    [SerializeField] private Color laserColorNormal = Color.green; // Color of the normal laser
+    [SerializeField] private Color shootBeamColor = Color.white; // Color of the beam when shooting
+    [SerializeField] private Vector3 aimRotationOffset; // Rotation offset for aiming at the player
+    private bool isDeflected = false;
+    [SerializeField] private float initialLaserWidth = 0.05f; // Initial width of the laser
+    [SerializeField] private float chargeLaserWidth = 0.2f; // Maximum width during the charge-up phase
+    [SerializeField] private float shootLaserWidth = 0.4f; // Width of the white beam during shooting
+    [SerializeField] private float bigBeamDuration = 0.2f; // Duration of the big beam effect
+    [SerializeField] private float aimDelay = 1f;
+    [SerializeField] private LayerMask deflectLayer;
     private bool isShooting = false;
     private Vector3 laserOffset; // Fixed laser offset
 
@@ -36,57 +33,62 @@ public class EnemyLaserShooter : MonoBehaviour
     {
         if (!player)
         {
-            SetPlayer(GameObject.FindWithTag("PlayerHead"));
+            SetPlayer(Camera.main.transform.gameObject);
         }
-        // Get the AudioSource component attached to this GameObject
+        // Initialize the laser appearance
         laser.startColor = laserColorNormal; // Set the initial color of the laser
         laser.endColor = laserColorNormal;
-        laser.startWidth = initialLaserWidth; // Set initial laser width
-        laser.endWidth = initialLaserWidth;
-        UpdateLaserOffset();
+
+        StartCoroutine(StartAimingAfterDelay());
     }
 
-    public void SetPlayer(GameObject Object)
+    void SetPlayer(GameObject playerObject)
     {
-        player = Object.transform;
+        player = playerObject.transform;
     }
 
-    void Update()
+    private IEnumerator StartAimingAfterDelay()
     {
-        AimAtPlayer();
-        UpdateLaser();
-        if (!isShooting)
+        yield return new WaitForSeconds(aimDelay); // Wait for the delay
+        StartCoroutine(AimAndShoot()); // Start aiming and shooting after the delay
+    }
+
+    private IEnumerator AimAndShoot()
+    {
+        while (true) // Continuously aim and shoot
         {
-            StartCoroutine(ShootAfterDelay());
+            if (Time.timeScale == 0)
+            {
+                yield return null; // Wait until the game resumes
+                continue; // Skip this iteration
+            }
+
+            AimAtPlayer();
+            UpdateLaser();
+            if (!isShooting && !isDeflected)
+            {
+                StartCoroutine(ShootAfterDelay());
+            }
+            yield return null; // Wait for the next frame
         }
     }
-
-    // Aim the gun towards the player
+    // Aim the enemy towards the player with an offset
     void AimAtPlayer()
     {
-        Vector3 direction = (player.position - transform.position).normalized;
-        gun.rotation = Quaternion.LookRotation(direction);
-    }
-
-    private void UpdateLaserOffset()
-    {
-        // Only calculate offset if player is assigned
         if (player != null)
         {
-            Vector3 directionToPlayer = (player.position - transform.position).normalized;
-            float offsetAmount = 0.5f; // Set the offset distance (adjust this value as needed)
+            Vector3 direction = (player.position - transform.position).normalized;
 
-            // Determine offset direction based on the player's position
-            if (Vector3.Dot(Vector3.right, directionToPlayer) > 0) // Player is on the right side
-            {
-                laserOffset = Vector3.Cross(directionToPlayer, Vector3.up) * offsetAmount; // Right offset
-            }
-            else // Player is on the left side
-            {
-                laserOffset = -Vector3.Cross(directionToPlayer, Vector3.up) * offsetAmount; // Left offset
-            }
+            // Rotate the direction by the specified offset
+            Quaternion offsetRotation = Quaternion.Euler(aimRotationOffset);
+            direction = offsetRotation * direction;
+
+            // Rotate the enemy object to look at the modified direction
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = lookRotation; // Snap to the new rotation immediately
         }
     }
+
 
     // Update the laser to point towards the player
     void UpdateLaser()
@@ -94,48 +96,31 @@ public class EnemyLaserShooter : MonoBehaviour
         if (gunMuzzle)
         {
             laser.SetPosition(0, gunMuzzle.position); // Set the start position of the laser to the gun muzzle
-            RaycastHit hit;
 
-            // Apply the fixed offset
-            Vector3 offsetPosition = gunMuzzle.position + laserOffset;
-
-            // Laser direction towards player
-            Vector3 laserDirection = (player.position - offsetPosition).normalized;
-
-            if (Physics.Raycast(gunMuzzle.position, laserDirection, out hit, laserRange))
-            {
-                Debug.DrawLine(gunMuzzle.position, hit.point, Color.red);
-                laser.SetPosition(1, hit.point);
-                if (((1 << hit.collider.gameObject.layer) & deflectLayer) != 0)
-                {
-                    audioSource.Stop();
-                    DeflectShot(hit.point);
-                }
-            }
-            else
-            {
-                // Set laser end point to max range if no hit
-                laser.SetPosition(1, gunMuzzle.position + laserDirection * laserRange);
-            }
+            // Laser direction aiming straight forward from the gun muzzle
+            Vector3 laserDirection = gunMuzzle.forward; // Use the forward direction
+            laser.SetPosition(1, gunMuzzle.position + laserDirection * laserRange);
         }
     }
+
 
     // Coroutine to shoot after a delay
     IEnumerator ShootAfterDelay()
     {
         isShooting = true;
-
-        // Start playing the charging sound on loop
+        if (!isDeflected)
+        {
+            // Start playing the charging sound on loop
         audioSource.clip = chargeSound;
         audioSource.loop = true;
         audioSource.Play();
 
         // Charge up effect
         float chargeElapsed = 0f;
-        while (chargeElapsed < chargeTime)
+        while (chargeElapsed < aimDuration)
         {
             chargeElapsed += Time.deltaTime;
-            float t = chargeElapsed / chargeTime;
+            float t = chargeElapsed / aimDuration;
 
             // Adjust laser color based on charge
             laser.startColor = Color.Lerp(laserColorNormal, laserColorCharged, t);
@@ -149,28 +134,53 @@ public class EnemyLaserShooter : MonoBehaviour
             yield return null; // Wait for the next frame
         }
 
-        // Stop the charging sound before shooting
-        audioSource.PlayOneShot(shootSound);
+            // Stop the charging sound before shooting
+            if (!isDeflected)
+            {
+                audioSource.PlayOneShot(shootSound);
+                ShootPlayer();
+            }
 
-        // White shooting beam with animated expansion and contraction
-        yield return StartCoroutine(AnimateShootBeam());
+            // White shooting beam with animated expansion and contraction
+            yield return StartCoroutine(AnimateShootBeam());
 
-        // Play shooting sound
-       
+            // Now shoot the laser (apply damage or any action here)
 
-        // Now shoot the laser (apply damage or any action here)
-        ShootPlayer();
+            // Reset laser width and color back to normal after shooting
+            laser.startWidth = initialLaserWidth;
+            laser.endWidth = initialLaserWidth;
+            laser.startColor = laserColorNormal;
+            laser.endColor = laserColorNormal;
 
-        // Reset laser width and color back to normal after shooting
-        laser.startWidth = initialLaserWidth;
-        laser.endWidth = initialLaserWidth;
-        laser.startColor = laserColorNormal;
-        laser.endColor = laserColorNormal;
-
-        isShooting = false;
+            isShooting = false;
+        }
+        else if(isDeflected)
+        { 
+                audioSource.Stop();
+        }
     }
 
-    // Function to animate the shoot beam expanding quickly and reverting back
+    // Function to apply damage to the player
+    void ShootPlayer()
+    {
+        PlayerHealth.Instance.TakeDamage();
+    }
+
+    // Method to deflect the shot
+    public void DeflectShot(Vector3 deflectPoint)
+    {
+        isDeflected = true;
+        Debug.Log("Shot deflected! Enemy killed.");
+        laser.enabled = false;
+        Destroy(visuals);
+
+        // Play deflection sound
+        AudioSource.PlayClipAtPoint(deflectionSound, deflectPoint);
+
+        // Destroy the enemy object after a short delay for sound to play
+        Destroy(gameObject, 0.5f);
+    }
+
     IEnumerator AnimateShootBeam()
     {
         float expandTime = 0.1f; // Time to expand the beam
@@ -212,34 +222,13 @@ public class EnemyLaserShooter : MonoBehaviour
         }
     }
 
-    // Function to apply damage to the player
-    void ShootPlayer()
+    void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Player hit! Apply damage.");
-        // You can add the player's health component and apply damage here.
-        // Example: playerHealth.TakeDamage(playerDamage);
-    }
-
-    // Function to deflect the shot and kill the enemy
-    void DeflectShot(Vector3 deflectPoint)
-    {
-        Debug.Log("Shot deflected! Enemy killed.");
-        laser.enabled = false;
-        Destroy(visuals);
-
-        // Instantiate a temporary GameObject to play the sound
-        GameObject soundObject = new GameObject("DeflectionSound");
-        soundObject.transform.position = deflectPoint; // Set position to the deflect point
-
-        // Add an AudioSource component and play the sound
-        AudioSource tempAudioSource = soundObject.AddComponent<AudioSource>();
-        tempAudioSource.clip = deflectionSound;
-        tempAudioSource.Play();
-
-        // Destroy the temporary GameObject after the sound has played
-        Destroy(soundObject, deflectionSound.length);
-
-        // Destroy the enemy object after a short delay for sound to play
-        Destroy(gameObject, 0.5f);
+        if (((1 << other.gameObject.layer) & deflectLayer) != 0)
+        {
+            // Deflect the shot if it hits the player's weapon
+            if(!isDeflected)
+            DeflectShot(other.transform.position);
+        }
     }
 }

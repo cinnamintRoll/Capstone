@@ -12,7 +12,15 @@ public class SmoothFollowHUD : MonoBehaviour
 
     private Vector3 targetPosition;
 
-    void Update()
+    private void Start()
+    {
+        if (!playerCamera)
+        {
+            playerCamera = Camera.main.transform;
+        }
+    }
+
+    void FixedUpdate()
     {
         // Target position is in front of the player's camera, at a slight height offset
         targetPosition = playerCamera.position + playerCamera.forward * followDistance;
