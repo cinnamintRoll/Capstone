@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using EzySlice;
 using System.Net;
+using UnityEngine.Windows;
+using BNG;
 
 public class SliceObject : MonoBehaviour
 {
@@ -10,9 +12,12 @@ public class SliceObject : MonoBehaviour
     public Transform bladeStart;
     public Transform bladeEnd;
     public VelocityEstimator velocityEstimator;
-
+    private InputBridge input;
     // Reference to a material used for the cross-section (cut faces)
     public Material crossSectionMaterial;
+
+    public Grabber thisGrabber;
+    public enum HandSide { LeftHand, RightHand }
 
     // Adjust this value as needed for the force of the cut
     public float cutForce = 2000f;
@@ -37,44 +42,50 @@ public class SliceObject : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
     }
 
-    void FixedUpdate()
+    private void Awake()
+    {
+        input = InputBridge.Instance;
+    }
+
+        void FixedUpdate()
     {
         Debug.DrawLine(bladeStart.position, bladeEnd.position, Color.red);
 
         if (Physics.Linecast(bladeStart.position, bladeEnd.position, out RaycastHit hit, sliceableLayer))
         {
             GameObject sliceableObject = hit.collider.gameObject;
-            Slice(sliceableObject);
+            StartCoroutine(SliceAsync(sliceableObject));
         }
     }
 
-    public void Slice(GameObject sliceableObject)
+    IEnumerator SliceAsync(GameObject sliceableObject)
+{
+    yield return new WaitForEndOfFrame(); // Defer slicing to the end of the frame
+
+    Vector3 velocity = velocityEstimator.GetVelocityEstimate();
+    Vector3 planeNormal = Vector3.Cross(bladeEnd.position - bladeStart.position, velocity);
+    planeNormal.Normalize();
+
+    SlicedHull slicedObject = sliceableObject.Slice(bladeEnd.position, planeNormal, crossSectionMaterial);
+
+    if (slicedObject != null)
     {
-        Vector3 velocity = velocityEstimator.GetVelocityEstimate();
-        Vector3 planeNormal = Vector3.Cross(bladeEnd.position - bladeStart.position, velocity);
-        planeNormal.Normalize();
+        input.VibrateController(0.5f, 1f, 0.05f, thisGrabber.HandSide);
 
-        SlicedHull slicedObject = sliceableObject.Slice(bladeEnd.position, planeNormal, crossSectionMaterial);
+        PlaySliceSound();
 
-            if (slicedObject != null)
-            {
-                // Play the slice sound effect with random pitch and speed
-                PlaySliceSound();
+        GameObject upperHull = slicedObject.CreateUpperHull(sliceableObject, crossSectionMaterial);
+        GameObject lowerHull = slicedObject.CreateLowerHull(sliceableObject, crossSectionMaterial);
+        upperHull.AddComponent<DespawnAfterSlice>();
+        lowerHull.AddComponent<DespawnAfterSlice>();
 
-                // Create the top sliced part
-                GameObject upperHull = slicedObject.CreateUpperHull(sliceableObject, crossSectionMaterial);
-                GameObject lowerHull = slicedObject.CreateLowerHull(sliceableObject, crossSectionMaterial);
-                upperHull.AddComponent<DespawnAfterSlice>();
-                lowerHull.AddComponent<DespawnAfterSlice>();
+        SetupHullObject(upperHull, sliceableObject);
+        SetupHullObject(lowerHull, sliceableObject);
 
-                // Set the transform for the sliced parts
-                SetupHullObject(upperHull, sliceableObject);
-                SetupHullObject(lowerHull, sliceableObject);
-
-                // Optionally, destroy the original object
-                Destroy(sliceableObject);
-            }
+        Destroy(sliceableObject);
     }
+}
+
 
     // Helper function to configure the newly created slice objects
     private void SetupHullObject(GameObject hull, GameObject originalObject)

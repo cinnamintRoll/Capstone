@@ -4,11 +4,11 @@ public class FacePlayer : MonoBehaviour
 {
     public Transform player; // Reference to the player's transform
     public Vector3 rotationOffset; // Offset for rotation
-    private void OnEnable()
+    private void Start()
     {
         player = Camera.main.transform;
     }
-    void Update()
+    void FixedUpdate()
     {
         if (player != null)
         {
