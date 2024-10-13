@@ -8461,11 +8461,11 @@ PrefabInstance:
       addedObject: {fileID: 5774223523487692194}
     - targetCorrespondingSourceObject: {fileID: 3025252904149401433, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
         type: 3}
-      insertIndex: 0
+      insertIndex: 1
       addedObject: {fileID: 4939108575253728597}
     - targetCorrespondingSourceObject: {fileID: 3025252904149401433, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
         type: 3}
-      insertIndex: 1
+      insertIndex: 2
       addedObject: {fileID: 5652793607487925185}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8856482806938145719, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
