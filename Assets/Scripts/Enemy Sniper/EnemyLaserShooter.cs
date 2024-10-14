@@ -39,6 +39,12 @@ public class EnemyLaserShooter : MonoBehaviour
         laser.startColor = laserColorNormal; // Set the initial color of the laser
         laser.endColor = laserColorNormal;
 
+       // StartCoroutine(StartAimingAfterDelay());
+    }
+
+    public void StartShooting()
+    {
+        if(this)
         StartCoroutine(StartAimingAfterDelay());
     }
 
@@ -230,5 +236,6 @@ public class EnemyLaserShooter : MonoBehaviour
             if(!isDeflected)
             DeflectShot(other.transform.position);
         }
+        Debug.Log(other.name);
     }
 }

@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1966846387051308260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5702073956467746899}
+  - component: {fileID: 3777142475904961148}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5702073956467746899
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966846387051308260}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 348561335005066824}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3777142475904961148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966846387051308260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7be7f252c73ae49be01bfe4373ce62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &145063849961785600
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -952,6 +996,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 862970565212579940, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
+        type: 3}
+      propertyPath: locomotionToggleInput.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 864508875060407427, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
         type: 3}
@@ -3072,6 +3121,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3216679715088650992, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3230954191892805612, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
         type: 3}
@@ -8178,6 +8232,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 8913118743654600762, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8916161514518618722, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
         type: 3}
       propertyPath: m_Layer
@@ -8711,6 +8770,7 @@ MonoBehaviour:
   fist: {fileID: 3086244144268780278}
   pistol: {fileID: 4439844976432623134}
   sword: {fileID: 4939108575253500277}
+  currentWeapon: 2
 --- !u!4 &8026786967210377845 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3025252904149401433, guid: 95fa1fd3c47aafe4ca02325a6550bb9c,
@@ -8873,7 +8933,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7778916929767366613, guid: 56442c6149ad12944b39214abec6d29a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5702073956467746899}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56442c6149ad12944b39214abec6d29a, type: 3}
 --- !u!4 &348561335005066824 stripped
@@ -8897,6 +8961,11 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: d85eea887fb0cd4418a91db9d5217751, type: 3}
     - target: {fileID: 1398292124317172399, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
         type: 3}
+      propertyPath: thisGrabber
+      value: 
+      objectReference: {fileID: 8026786968798062483}
+    - target: {fileID: 1398292124317172399, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
+        type: 3}
       propertyPath: velocityEstimator
       value: 
       objectReference: {fileID: 1021549624718066279}
@@ -8918,7 +8987,7 @@ PrefabInstance:
     - target: {fileID: 4596040105683089688, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
         type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4596040105683089688, guid: caec4d6ec9e6ebb4f9d959ca67fbc3ca,
         type: 3}
