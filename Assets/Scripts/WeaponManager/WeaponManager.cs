@@ -23,7 +23,7 @@ public class WeaponManager : MonoBehaviour
     public GameObject pistol;
     public GameObject sword;
 
-    private WeaponType currentWeapon;
+    [SerializeField] private WeaponType currentWeapon;
 
     private void Awake()
     {
@@ -63,8 +63,6 @@ public class WeaponManager : MonoBehaviour
             if (weapon.Value != null)
                 weapon.Value.SetActive(false);  // Only disable actual GameObjects
         }
-
-        currentWeapon = WeaponType.Fist;
         SwapWeapon(currentWeapon);
     }
 

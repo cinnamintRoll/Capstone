@@ -10,9 +10,12 @@ public class PunchArrow : MonoBehaviour
     public float maxSpeedScore = 100f; // Maximum score for punch speed
     public float maxAngleScore = 100f; // Maximum score for perfect angle
     public float maxDistance = 3.0f; // Maximum distance before it's considered a miss
-    public float maxAllowedAngle = 30f; // Maximum angle deviation (in degrees) for a valid hit
+    public float maxAllowedAngle = 40f; // Maximum angle deviation (in degrees) for a valid hit
     public Transform ObjectVisuals;
     private bool hitRegistered = false;
+
+    // External transform to represent the desired punch angle
+    public Transform punchAngleTransform;
 
     // Unity Event to trigger on hit
     public UnityEvent onHit;
@@ -60,7 +63,7 @@ public class PunchArrow : MonoBehaviour
         {
             if (hitRegistered)
             {
-                if (ObjectVisuals = null)
+                if (ObjectVisuals == null)
                 {
                     Destroy(gameObject);
                 }
@@ -102,11 +105,11 @@ public class PunchArrow : MonoBehaviour
 
     private float CalculateAnglePoints(Collector other)
     {
-        // X-axis of the PunchArrow object (local forward direction)
-        Vector3 punchArrowXAxis = transform.forward;
+        // Use the external punch angle transform's forward direction if it's set
+        Vector3 punchArrowDirection = punchAngleTransform != null ? punchAngleTransform.forward : transform.forward;
 
-        // Calculate the angle between the hit direction and the object's X-axis
-        float angle = Vector3.Angle(other.CollectorVelocity, punchArrowXAxis);
+        // Calculate the angle between the hit direction and the punch angle direction
+        float angle = Vector3.Angle(other.CollectorVelocity, punchArrowDirection);
 
         // If the angle is greater than the maxAllowedAngle, it's considered a miss
         if (angle > maxAllowedAngle)

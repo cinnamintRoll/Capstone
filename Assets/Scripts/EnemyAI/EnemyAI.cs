@@ -1,14 +1,26 @@
+using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using static Enemies;
+
+[Serializable]
+public class Enemies
+{
+    public string EnemyName;
+    public enum EnemyType { Melee, Ranged, Sniper }
+    public EnemyType enemyType;
+    public GameObject EnemyObject;
+}
 
 public class EnemyAI : MonoBehaviour
 {
-    public enum EnemyState { Idle, MoveToPoint, ChasePlayer, Attack }
-    public enum EnemyType { Melee, Ranged, Sniper }
-
+    public enum EnemyState { Idle, MoveToPoint, ChasePlayer, Attack, Death }
     public EnemyState currentState = EnemyState.Idle;
-    public EnemyType enemyType = EnemyType.Melee; // Default type is melee
-
+    public EnemyType enemyAIType = EnemyType.Melee; // Default type is melee
+    [SerializeField]
+    private List<Enemies> Enemies;
     public Transform player;
     public Transform pointToMove;
     public float chaseRange = 10f;
@@ -16,8 +28,12 @@ public class EnemyAI : MonoBehaviour
     public float rangedAttackRange = 15f; // Ranged or sniper attack range
     public float attackCooldown = 1.5f;
 
-    private NavMeshAgent navMeshAgent;
+    public EnemyLaserShooter SniperScript;
+
+    [SerializeField] private NavMeshAgent navMeshAgent;
     private float lastAttackTime = 0f;
+    private GameObject EnemyVisuals;
+    public float health = 100f; // Enemy's health
 
     // Variables to control chase update intervals
     private float chaseUpdateTimer = 0f;
@@ -25,8 +41,20 @@ public class EnemyAI : MonoBehaviour
     public float maxChaseUpdateInterval = 0.5f; // Maximum time between chase updates
     private float chaseUpdateInterval;
 
-    void Start()
+    void OnEnable()
     {
+        foreach (var enemy in Enemies)
+        {
+            if (enemy.enemyType == this.enemyAIType)
+            {
+                enemy.EnemyObject.SetActive(true);
+                EnemyVisuals = enemy.EnemyObject;
+            }
+            else
+            {
+                enemy.EnemyObject.SetActive(false);
+            }
+        }
         navMeshAgent = GetComponent<NavMeshAgent>();
         SetRandomChaseUpdateInterval(); // Set a random initial update interval
     }
@@ -47,6 +75,14 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Attack:
                 HandleAttack();
                 break;
+            case EnemyState.Death:
+                HandleDeath();
+                break;
+        }
+
+        if (!EnemyVisuals)
+        {
+            TransitionToState(EnemyState.Death);
         }
     }
 
@@ -69,26 +105,31 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Attack:
                 navMeshAgent.isStopped = true;
                 break;
+            case EnemyState.Death:
+                navMeshAgent.isStopped = true;
+                HandleDeath();
+                break;
         }
     }
 
     // Handle Idle State
     void HandleIdle()
     {
-        // If the player comes within range, start chasing them
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= chaseRange)
-        {
-            TransitionToState(EnemyState.ChasePlayer);
-        }
+        // Idle behavior
+        HandleDeath();
     }
 
     // Handle MoveToPoint State
     void HandleMoveToPoint()
     {
         float distanceToDestination = Vector3.Distance(transform.position, pointToMove.position);
-
+        chaseUpdateTimer += Time.deltaTime;
+        if (chaseUpdateTimer >= chaseUpdateInterval)
+        {
+            chaseUpdateTimer = 0f; // Reset the timer
+            SetRandomChaseUpdateInterval(); // Randomize the next interval
+            MoveToPoint(); // Update destination
+        }
         if (distanceToDestination <= 1f)
         {
             TransitionToState(EnemyState.Attack); // Reached destination, switch to attack
@@ -106,38 +147,58 @@ public class EnemyAI : MonoBehaviour
         {
             chaseUpdateTimer = 0f; // Reset the timer
             SetRandomChaseUpdateInterval(); // Randomize the next interval
-            navMeshAgent.SetDestination(player.position); // Update destination
+            MoveToPoint(player); // Update destination
         }
+        if (distanceToPlayer <= attackRange)
+        {
+            switch (enemyAIType)
+            {
+                case EnemyType.Melee:
+                    TransitionToState(EnemyState.Attack); // Melee attack when close
+                    break;
 
-        if (enemyType == EnemyType.Melee && distanceToPlayer <= attackRange)
-        {
-            TransitionToState(EnemyState.Attack); // Melee attack when close
-        }
-        else if (enemyType == EnemyType.Ranged && distanceToPlayer <= rangedAttackRange)
-        {
-            TransitionToState(EnemyState.Attack); // Ranged attack at distance
-        }
-        else if (enemyType == EnemyType.Sniper && distanceToPlayer <= rangedAttackRange)
-        {
-            TransitionToState(EnemyState.Attack); // Sniper attack at long range
+                case EnemyType.Ranged:
+                case EnemyType.Sniper:
+                    TransitionToState(EnemyState.Attack); // Ranged attack at distance or Sniper attack at long range
+                    break;
+            }
         }
     }
 
     // Handle Attack State
     void HandleAttack()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
         if (Time.time > lastAttackTime + attackCooldown)
         {
             lastAttackTime = Time.time;
             PerformAttack();
         }
 
-        // If player is too far for the current attack type, transition back to chase
-        if (enemyType == EnemyType.Melee || enemyType == EnemyType.Sniper)
+        switch (enemyAIType)
         {
-            TransitionToState(EnemyState.Idle);
+            case EnemyType.Melee:
+            case EnemyType.Sniper:
+                TransitionToState(EnemyState.Idle);
+                break;
+        }
+    }
+
+    // Handle Death State
+    void HandleDeath()
+    {
+        Debug.Log("Enemy has died");
+
+        // Optionally, destroy the enemy object after a delay
+        Destroy(gameObject, 2f); // Adjust the delay as needed
+    }
+
+    // Enemy takes damage and checks for death
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0f)
+        {
+            TransitionToState(EnemyState.Death);
         }
     }
 
@@ -147,24 +208,28 @@ public class EnemyAI : MonoBehaviour
         navMeshAgent.SetDestination(pointToMove.position);
     }
 
+    public void MoveToPoint(Transform targetPoint)
+    {
+        pointToMove = targetPoint;
+        TransitionToState(EnemyState.MoveToPoint);
+    }
+
     // Perform attack logic based on the enemy type
     void PerformAttack()
     {
-        switch (enemyType)
+        switch (enemyAIType)
         {
             case EnemyType.Melee:
                 Debug.Log("Enemy performs a melee attack!");
-                // Add melee attack logic (damage, animations, etc.)
+                PlayerHealth.Instance.TakeDamage(); // Example of damaging the player
                 break;
             case EnemyType.Ranged:
                 Debug.Log("Enemy performs a ranged attack!");
-                // Add ranged attack logic (shoot projectiles, etc.)
                 ShootProjectile();
                 break;
             case EnemyType.Sniper:
                 Debug.Log("Enemy performs a sniper attack!");
-                // Add sniper attack logic (high-damage shot, longer cooldown, etc.)
-                ShootSniperProjectile();
+                SniperScript.StartShooting();
                 break;
         }
     }
@@ -172,22 +237,7 @@ public class EnemyAI : MonoBehaviour
     // Simulate shooting a projectile (for ranged and sniper enemies)
     void ShootProjectile()
     {
-        // Implement projectile instantiation here (simple ranged attack)
         Debug.Log("Enemy shoots a projectile at the player!");
-    }
-
-    // Simulate a sniper shot (higher damage or slower, more precise attack)
-    void ShootSniperProjectile()
-    {
-        // Implement sniper shot logic here
-        Debug.Log("Enemy snipes the player!");
-    }
-
-    // Public function to set the enemy's state to move to a point
-    public void GoToPoint(Transform targetPoint)
-    {
-        pointToMove = targetPoint;
-        TransitionToState(EnemyState.MoveToPoint);
     }
 
     // Public function to make the enemy idle
@@ -199,6 +249,6 @@ public class EnemyAI : MonoBehaviour
     // Randomize the chase update interval to avoid synchronized destination updates
     void SetRandomChaseUpdateInterval()
     {
-        chaseUpdateInterval = Random.Range(minChaseUpdateInterval, maxChaseUpdateInterval);
+        chaseUpdateInterval = UnityEngine.Random.Range(minChaseUpdateInterval, maxChaseUpdateInterval);
     }
 }
