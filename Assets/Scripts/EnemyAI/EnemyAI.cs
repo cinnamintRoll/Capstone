@@ -40,6 +40,9 @@ public class EnemyAI : MonoBehaviour
     public float minChaseUpdateInterval = 0.2f; // Minimum time between chase updates
     public float maxChaseUpdateInterval = 0.5f; // Maximum time between chase updates
     private float chaseUpdateInterval;
+    private PlayerHealth PlayerHealth;
+
+    private bool isDead = false;
 
     void OnEnable()
     {
@@ -57,6 +60,7 @@ public class EnemyAI : MonoBehaviour
         }
         navMeshAgent = GetComponent<NavMeshAgent>();
         SetRandomChaseUpdateInterval(); // Set a random initial update interval
+        PlayerHealth = PlayerHealth.Instance;
     }
 
     void Update()
@@ -116,7 +120,7 @@ public class EnemyAI : MonoBehaviour
     void HandleIdle()
     {
         // Idle behavior
-        HandleDeath();
+        Despawn();
     }
 
     // Handle MoveToPoint State
@@ -187,9 +191,22 @@ public class EnemyAI : MonoBehaviour
     void HandleDeath()
     {
         Debug.Log("Enemy has died");
-
+        if (PlayerHealth)
+        {
+            if (!isDead)
+            {
+                PlayerHealth.KillEnemy();
+                isDead = true;
+            }
+            
+        }
         // Optionally, destroy the enemy object after a delay
         Destroy(gameObject, 2f); // Adjust the delay as needed
+    }
+
+    void Despawn()
+    {
+        Destroy(gameObject, 4f);
     }
 
     // Enemy takes damage and checks for death
