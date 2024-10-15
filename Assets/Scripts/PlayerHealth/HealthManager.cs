@@ -17,6 +17,11 @@ public class PlayerHealth : MonoBehaviour
 
     [SerializeField] private Animator DamageAnimator;
 
+    // Audio handling with a single AudioSource and two clips
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip damageClip;
+    [SerializeField] private AudioClip healClip;
+
     void Awake()
     {
         if (Instance == null)
@@ -28,7 +33,6 @@ public class PlayerHealth : MonoBehaviour
             Destroy(gameObject);  // Ensure there's only one instance
         }
     }
-
 
     void Start()
     {
@@ -80,6 +84,9 @@ public class PlayerHealth : MonoBehaviour
 
         DamageAnimator.SetTrigger("TakeDamage");
 
+        // Play damage sound effect
+        audioSource.PlayOneShot(damageClip);
+
         UpdateKillCountText();
         UpdateSliders();
     }
@@ -114,6 +121,9 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = 0;  // Set the newly restored life to full health
         UpdateSliders();
         UpdateKillCountText();
+
+        // Play healing sound effect
+        audioSource.PlayOneShot(healClip);
     }
 
     // Debug methods for the Inspector buttons

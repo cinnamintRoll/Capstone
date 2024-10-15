@@ -25,6 +25,11 @@ public class WeaponManager : MonoBehaviour
 
     [SerializeField] private WeaponType currentWeapon;
 
+    // Audio handling
+    [SerializeField] private AudioSource audioSource;  // AudioSource component for playing sounds
+    [SerializeField] private AudioClip swapWeaponSound;  // Sound effect for swapping weapons
+
+    private bool onStart = false;
     private void Awake()
     {
         // Ensure that only one instance of WeaponManager exists
@@ -81,6 +86,16 @@ public class WeaponManager : MonoBehaviour
             weaponMap[newWeapon].SetActive(true);
         }
 
+        // Play weapon swap sound effect
+        if (onStart)
+        {
+            PlayWeaponSwapSound();
+        }
+        else
+        {
+            onStart = true;
+        }
+
         // Update current weapon
         currentWeapon = newWeapon;
     }
@@ -101,6 +116,19 @@ public class WeaponManager : MonoBehaviour
         if (weaponMap[currentWeapon] != null)
         {
             weaponMap[currentWeapon].SetActive(true);
+        }
+
+        // Play weapon swap sound effect
+        PlayWeaponSwapSound();
+    }
+
+    // Method to play the swap weapon sound
+    private void PlayWeaponSwapSound()
+    {
+        if (audioSource != null && swapWeaponSound != null)
+        {
+            audioSource.clip = swapWeaponSound;
+            audioSource.Play();
         }
     }
 }

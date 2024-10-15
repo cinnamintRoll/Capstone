@@ -58,6 +58,7 @@ public class AutoAimGun : MonoBehaviour
     public UnityEvent onShootEvent;
     public UnityEvent onReloadEvent;
 
+    private PlayerHealth PlayerHealth;
     // Animator component
 
     private void Awake()
@@ -66,6 +67,7 @@ public class AutoAimGun : MonoBehaviour
         originalPosition = transform.localPosition;
         originalRotation = transform.localRotation; // Store the original rotation
         UpdateAmmoCounter();
+        PlayerHealth = PlayerHealth.Instance;
     }
 
     void Update()
@@ -191,7 +193,10 @@ public class AutoAimGun : MonoBehaviour
                 if (damageEnemy != null)
                 {
                     damageEnemy.DealDamage(bulletDamage);
+                    
                 }
+                if (PlayerHealth)
+                    PlayerHealth.KillEnemy();
             }
             hitPoint = hit.point;
         }
