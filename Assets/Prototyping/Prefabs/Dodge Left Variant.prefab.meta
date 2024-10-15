@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream:Assets/Prototyping/Twitter.url.meta
 <<<<<<<< Updated upstream:Assets/Imports.meta
 guid: eff721f6634229043b521a536f1c84e3
 folderAsset: yes
@@ -6,6 +7,10 @@ folderAsset: yes
 guid: 5139cd075f56ebd45a4ca2172802c64e
 >>>>>>>> Stashed changes:Assets/Prototyping/Twitter.url.meta
 DefaultImporter:
+=======
+guid: 77e50bc0d02b1cf42b4802846c4c6dff
+PrefabImporter:
+>>>>>>> Stashed changes:Assets/Prototyping/Prefabs/Dodge Left Variant.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
