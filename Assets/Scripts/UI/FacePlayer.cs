@@ -6,7 +6,7 @@ public class FacePlayer : MonoBehaviour
     public Vector3 rotationOffset; // Offset for rotation
     private void Start()
     {
-        player = Camera.main.transform;
+        player = GameManager.Instance.PlayerTransform;
     }
     void FixedUpdate()
     {
