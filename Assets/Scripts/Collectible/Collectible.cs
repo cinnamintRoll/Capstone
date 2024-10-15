@@ -17,11 +17,29 @@ public class Collectible : MonoBehaviour
     [Tooltip("If Respawn is true, this GameObject will reactivate after RespawnTime. In seconds.")]
     public float RespawnTime = 10f;
 
+    [Header("Rotation Settings")]
+    [Tooltip("Enable or disable spinning of the visuals.")]
+    public bool Spin = true;
+
+    [Tooltip("The speed at which the visuals spin.")]
+    public float SpinSpeed = 100f;
+
+    [Tooltip("The direction of the spin using an angle direction vector.")]
+    public Vector3 SpinDirection = new Vector3(0, 1, 0); // Default to Y-axis spin
+
+    [Tooltip("The child GameObject that will rotate.")]
+    public GameObject VisualChild; // The visuals child object to spin
+
+    [Tooltip("The Visuals of this Collectible")]
+    [SerializeField] private List<GameObject> gameVisuals;
+
     [Header("Events")]
     [Tooltip("Optional event to be called when the item is collected.")]
     public UnityEvent onCollected;
 
     private bool isCollected = false; // Track if the item has been collected
+
+    
 
     private void Start()
     {
@@ -30,6 +48,22 @@ public class Collectible : MonoBehaviour
         if (collider != null)
         {
             collider.isTrigger = true;
+        }
+
+        // Check if the VisualChild is assigned
+        if (VisualChild == null)
+        {
+            Debug.LogWarning("VisualChild not assigned! Please assign the child object to spin.");
+        }
+    }
+
+    private void Update()
+    {
+        // Rotate the child visuals if Spin is enabled and VisualChild is assigned
+        if (Spin && VisualChild != null)
+        {
+            // Use the normalized direction vector for consistent spin
+            VisualChild.transform.Rotate(SpinDirection.normalized, SpinSpeed * Time.deltaTime);
         }
     }
 
@@ -41,6 +75,10 @@ public class Collectible : MonoBehaviour
         Collector collector = other.GetComponent<Collector>();
         if (collector != null)
         {
+            foreach (GameObject obj in gameVisuals)
+            {
+                obj.SetActive(false);
+            }
             Collect(collector); // Call the Collect method if it's a valid collector
         }
     }
